@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEO · La Era de la IA — Demo Scroll 3D</title>
+<meta name="description" content="Demo premium de efectos 3D con scroll: cerebro de partículas, red neuronal, datos e IA generativa. NEO Labs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a; --bg2:#0d0d12;
+  --green:#00ff41; --red:#ff0044; --cyan:#00e5ff;
+  --white:#fff; --text:rgba(255,255,255,0.85); --muted:rgba(255,255,255,0.5); --dim:rgba(255,255,255,0.25);
+  --border:rgba(255,255,255,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.65;-webkit-font-smoothing:antialiased}
+canvas{display:block}
+section{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden}
+.wrap{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:0 32px;width:100%}
+.glow{position:absolute;inset:0;z-index:0;pointer-events:none}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:22px 32px;background:linear-gradient(180deg,rgba(10,10,10,0.85),transparent)}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.15rem;letter-spacing:3px;color:var(--white)}
+.logo span{color:var(--green)}
+.nav-tag{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+
+/* HERO */
+#hero .glow{background:radial-gradient(ellipse 60% 50% at 50% 45%,rgba(0,255,65,0.08),transparent 70%)}
+.hero-copy{text-align:center}
+.tag{display:inline-block;font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--green);border:1px solid rgba(0,255,65,0.25);padding:7px 18px;border-radius:50px;margin-bottom:26px;background:rgba(0,255,65,0.04)}
+h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(2.6rem,8vw,6rem);line-height:0.98;color:var(--white);letter-spacing:2px;text-transform:uppercase}
+h1 .line{display:block;overflow:hidden}
+h1 .line span{display:block;transform:translateY(110%);animation:rise 1s cubic-bezier(.16,1,.3,1) forwards}
+h1 .line:nth-child(2) span{animation-delay:.12s}
+h1 em{font-style:normal;color:var(--green);text-shadow:0 0 40px rgba(0,255,65,0.5)}
+@keyframes rise{to{transform:translateY(0)}}
+.hero-sub{font-size:clamp(1rem,1.8vw,1.3rem);color:var(--muted);max-width:640px;margin:26px auto 0;font-weight:300}
+.scroll-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--dim);font-size:0.62rem;letter-spacing:3px;text-transform:uppercase}
+.scroll-hint .mouse{width:22px;height:36px;border:1.5px solid var(--dim);border-radius:12px;position:relative}
+.scroll-hint .mouse::after{content:'';position:absolute;top:6px;left:50%;width:3px;height:7px;margin-left:-1.5px;border-radius:3px;background:var(--green);animation:wheel 1.6s ease-in-out infinite}
+@keyframes wheel{0%{transform:translateY(0);opacity:1}70%{transform:translateY(12px);opacity:0}100%{opacity:0}}
+
+/* CONTENT SECTIONS */
+.effect-sec .glow{background:radial-gradient(ellipse 55% 55% at 50% 50%,rgba(0,255,65,0.06),transparent 70%)}
+.effect-sec .wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.effect-canvas{position:relative;z-index:1;height:60vh;min-height:420px;width:100%}
+.effect-canvas canvas{position:absolute;inset:0;width:100%;height:100%}
+.sec-label{font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--green);margin-bottom:14px;font-weight:600}
+.sec-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.9rem,4vw,3.2rem);font-weight:700;color:var(--white);line-height:1.05;margin-bottom:20px;text-transform:uppercase;letter-spacing:1px}
+.sec-title .accent-red{color:var(--red)}
+.sec-title .accent-cyan{color:var(--cyan)}
+.sec-title .accent-green{color:var(--green)}
+.sec-body{color:var(--muted);font-size:1.02rem;font-weight:300;max-width:520px}
+.sec-body strong{color:var(--white);font-weight:600}
+.sec-stats{display:flex;gap:34px;margin-top:30px;flex-wrap:wrap}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:700;color:var(--white)}
+.stat-lbl{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:2px}
+#neural .glow{background:radial-gradient(ellipse 55% 55% at 50% 50%,rgba(255,0,68,0.07),transparent 70%)}
+#data .glow{background:radial-gradient(ellipse 55% 55% at 50% 50%,rgba(0,229,255,0.07),transparent 70%)}
+#gen .glow{background:radial-gradient(ellipse 55% 55% at 50% 50%,rgba(0,255,65,0.06),transparent 70%)}
+
+/* CTA */
+#cta{min-height:70vh;text-align:center;background:radial-gradient(ellipse 50% 60% at 50% 50%,rgba(0,255,65,0.05),transparent 70%)}
+#cta h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,5vw,4rem);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px;line-height:1.02}
+#cta h2 em{font-style:normal;color:var(--green)}
+#cta p{color:var(--muted);max-width:520px;margin:22px auto 36px;font-weight:300}
+.btn{display:inline-block;font-family:'Space Grotesk',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#000;background:var(--green);padding:18px 44px;border-radius:50px;text-decoration:none;box-shadow:0 0 40px rgba(0,255,65,0.35);transition:all .3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 60px rgba(0,255,65,0.55)}
+
+footer{padding:30px 32px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:0.75rem;color:var(--dim)}
+footer a{color:var(--green);text-decoration:none}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:900px){
+  .effect-sec .wrap{grid-template-columns:1fr;gap:10px}
+  .effect-canvas{height:46vh;min-height:320px;order:-1}
+  .sec-body{max-width:none}
+  .glow{opacity:.8}
+}
+@media(max-width:560px){
+  nav{padding:18px 20px}
+  .wrap{padding:0 22px}
+  .scroll-hint{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">NEO<span>.</span></div>
+  <div class="nav-tag">Demo · Scroll 3D</div>
+</nav>
+
+<!-- HERO: cerebro de particulas -->
+<section id="hero">
+  <div class="glow"></div>
+  <div class="effect-canvas" id="brainCanvasWrap" style="position:absolute;inset:0;height:100%;min-height:0;z-index:1">
+    <canvas id="brainCanvas"></canvas>
+  </div>
+  <div class="wrap hero-copy">
+    <div class="tag">Inteligencia Artificial</div>
+    <h1>
+      <span class="line"><span>LA ERA</span></span>
+      <span class="line"><span>DE LA <em>IA</em></span></span>
+    </h1>
+    <p class="hero-sub">Máquinas que aprenden, crean y deciden. Un recorrido visual por la tecnología que está reescribiendo el mundo.</p>
+  </div>
+  <div class="scroll-hint"><div class="mouse"></div>SCROLL</div>
+</section>
+
+<!-- REDES NEURONALES -->
+<section class="effect-sec" id="neural">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="effect-canvas" id="neuralCanvasWrap">
+      <canvas id="neuralCanvas"></canvas>
+    </div>
+    <div class="copy reveal">
+      <div class="sec-label">01 · Aprendizaje</div>
+      <h2 class="sec-title">Redes <span class="accent-red">Neuronales</span></h2>
+      <p class="sec-body">La IA aprende imitando al cerebro: <strong>miles de millones de conexiones</strong> que se ajustan con cada ejemplo. Cada nodo recibe señales, las pondera y decide si se activa. Así nace el reconocimiento de voz, la visión artificial y los modelos que hoy usamos.</p>
+      <div class="sec-stats">
+        <div><div class="stat-num" data-count="175">0</div><div class="stat-lbl">Billones de parámetros</div></div>
+        <div><div class="stat-num">0.1s</div><div class="stat-lbl">Respuesta media</div></div>
+        <div><div class="stat-num" data-count="100">0</div><div class="stat-lbl">Idiomas soportados</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATOS -->
+<section class="effect-sec" id="data">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="copy reveal">
+      <div class="sec-label">02 · Combustible</div>
+      <h2 class="sec-title">El poder de los <span class="accent-cyan">datos</span></h2>
+      <p class="sec-body">Cada búsqueda, cada clic, cada conversación genera datos. La IA los convierte en <strong>decisiones, predicciones y automatización</strong>. Cuantos más datos, más precisa es la máquina: el dato es el nuevo petróleo, y fluye en tiempo real.</p>
+      <div class="sec-stats">
+        <div><div class="stat-num">2.5Q</div><div class="stat-lbl">Bytes generados al día</div></div>
+        <div><div class="stat-num" data-count="90">0</div><div class="stat-lbl">% del mundo digital</div></div>
+      </div>
+    </div>
+    <div class="effect-canvas" id="dataCanvasWrap">
+      <canvas id="dataCanvas"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- IA GENERATIVA -->
+<section class="effect-sec" id="gen">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="effect-canvas" id="genCanvasWrap">
+      <canvas id="genCanvas"></canvas>
+    </div>
+    <div class="copy reveal">
+      <div class="sec-label">03 · Creación</div>
+      <h2 class="sec-title">IA <span class="accent-green">Generativa</span></h2>
+      <p class="sec-body">Modelos que <strong>crean texto, imagen, código y música</strong> a partir de un prompt. No memorizan: aprenden patrones y generan algo nuevo. Es la tecnología detrás de los asistentes que automatizan trabajo y multiplican la productividad.</p>
+      <div class="sec-stats">
+        <div><div class="stat-num" data-count="200">0</div><div class="stat-lbl">Mil millones de usuarios</div></div>
+        <div><div class="stat-num" data-count="7">0</div><div class="stat-lbl">Horas ahorradas / semana</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="wrap reveal" style="text-align:center">
+    <h2>El futuro se<br>escribe con <em>código</em></h2>
+    <p>Webs premium con efectos 3D e inteligencia artificial para tu negocio. Hecho por NEO Labs.</p>
+    <a class="btn" href="https://neolabs.es" target="_blank" rel="noopener">NEO Labs</a>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 NEO Labs · Demo de efectos scroll 3D</div>
+  <div>Three.js · GSAP ScrollTrigger · Hecho con <a href="https://neolabs.es" target="_blank" rel="noopener">NEO</a></div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ───────── utilidades ───────── */
+function makeScene(canvas, color){
+  const wrap = canvas.parentElement;
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:false, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+  camera.position.z = 8;
+  const st = {running:false, rot:{x:0,y:0,z:0}};
+  function resize(){
+    const r = wrap.getBoundingClientRect();
+    renderer.setSize(r.width, r.height, false);
+    camera.aspect = r.width / r.height;
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(wrap);
+  resize();
+  return {renderer, scene, camera, st};
+}
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.target._st) e.target._st.running = e.isIntersecting; });
+},{threshold:0.05});
+
+/* ───────── 1. CEREBRO (partículas + wireframe) ───────── */
+(function brain(){
+  const c = document.getElementById('brainCanvas');
+  const {renderer, scene, camera, st} = makeScene(c, 0x00ff41);
+
+  const count = 2600;
+  const pos = new Float32Array(count*3);
+  const geo = new THREE.BufferGeometry();
+  for(let i=0;i<count;i++){
+    const r = 2.6 * Math.cbrt(Math.random());
+    const theta = Math.random()*Math.PI*2;
+    const phi = Math.acos(2*Math.random()-1);
+    pos[i*3]   = r*Math.sin(phi)*Math.cos(theta);
+    pos[i*3+1] = r*Math.sin(phi)*Math.sin(theta);
+    pos[i*3+2] = r*Math.cos(phi);
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  const mat = new THREE.PointsMaterial({color:0x00ff41, size:0.035, transparent:true, opacity:0.9, blending:THREE.AdditiveBlending, depthWrite:false});
+  const brain = new THREE.Points(geo, mat);
+  scene.add(brain);
+
+  const wire = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(2.15, 1),
+    new THREE.MeshBasicMaterial({color:0x00ff41, wireframe:true, transparent:true, opacity:0.12})
+  );
+  scene.add(wire);
+
+  const inner = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.9, 2),
+    new THREE.MeshBasicMaterial({color:0x00ff41, wireframe:true, transparent:true, opacity:0.18})
+  );
+  scene.add(inner);
+
+  const group = new THREE.Group();
+  group.add(brain, wire, inner);
+  scene.add(group);
+
+  st.rot = {y:0, z:0, hoverX:0, hoverY:0};
+
+  gsap.to(st.rot, {
+    y: Math.PI*2,
+    ease:'none',
+    scrollTrigger:{trigger:'#hero', start:'top top', end:'bottom top', scrub:1}
+  });
+  gsap.to(st.rot, {
+    z: -0.9,
+    ease:'none',
+    scrollTrigger:{trigger:'#hero', start:'top top', end:'bottom top', scrub:1}
+  });
+  gsap.to(group.position, {
+    y: 2.4, scale: 1.4,
+    ease:'none',
+    scrollTrigger:{trigger:'#hero', start:'top top', end:'bottom top', scrub:1}
+  });
+
+  window.addEventListener('mousemove', e=>{
+    st.rot.hoverX = (e.clientX/window.innerWidth - 0.5)*0.8;
+    st.rot.hoverY = (e.clientY/window.innerHeight - 0.5)*0.8;
+  });
+
+  c._st = st;
+  io.observe(c);
+
+  (function loop(){
+    requestAnimationFrame(loop);
+    if(!st.running) return;
+    group.rotation.y += (st.rot.y - group.rotation.y)*0.08;
+    group.rotation.x += (st.rot.hoverY - group.rotation.x)*0.05;
+    group.rotation.z += ((st.rot.z + st.rot.hoverX) - group.rotation.z)*0.05;
+    wire.rotation.y -= 0.001;
+    inner.rotation.y += 0.002;
+    renderer.render(scene, camera);
+  })();
+})();
+
+/* ───────── 2. RED NEURONAL ───────── */
+(function neural(){
+  const c = document.getElementById('neuralCanvas');
+  const {renderer, scene, camera, st} = makeScene(c, 0xff0044);
+  camera.position.z = 9;
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  // nodos
+  const N = 26;
+  const nodes = [];
+  const nodeGeo = new THREE.SphereGeometry(0.09, 10, 10);
+  for(let i=0;i<N;i++){
+    const x=(Math.random()-0.5)*8, y=(Math.random()-0.5)*6, z=(Math.random()-0.5)*5;
+    nodes.push(new THREE.Vector3(x,y,z));
+    const m = new THREE.Mesh(nodeGeo, new THREE.MeshBasicMaterial({color: Math.random()>0.5?0xff0044:0x00ff41, transparent:true, opacity:0.9}));
+    m.position.set(x,y,z);
+    group.add(m);
+  }
+  // conexiones entre nodos cercanos
+  const pts = [];
+  for(let i=0;i<N;i++){
+    for(let j=i+1;j<N;j++){
+      if(nodes[i].distanceTo(nodes[j]) < 2.6){
+        pts.push(nodes[i].x,nodes[i].y,nodes[i].z, nodes[j].x,nodes[j].y,nodes[j].z);
+      }
+    }
+  }
+  const lineGeo = new THREE.BufferGeometry();
+  lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(pts,3));
+  const lines = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({color:0xff0044, transparent:true, opacity:0.35, blending:THREE.AdditiveBlending}));
+  group.add(lines);
+
+  st.rot = {y:0.4};
+  gsap.to(st.rot, {
+    y: Math.PI*2 + 0.4, ease:'none',
+    scrollTrigger:{trigger:'#neural', start:'top bottom', end:'bottom top', scrub:1}
+  });
+  gsap.fromTo(group.rotation, {x:0.2}, {
+    x: -0.5, ease:'none',
+    scrollTrigger:{trigger:'#neural', start:'top bottom', end:'bottom top', scrub:1}
+  });
+
+  c._st = st;
+  io.observe(c);
+
+  (function loop(){
+    requestAnimationFrame(loop);
+    if(!st.running) return;
+    group.rotation.y += (st.rot.y - group.rotation.y)*0.06;
+    lines.rotation.y += 0.0015;
+    renderer.render(scene, camera);
+  })();
+})();
+
+/* ───────── 3. FLUJO DE DATOS ───────── */
+(function data(){
+  const c = document.getElementById('dataCanvas');
+  const {renderer, scene, camera, st} = makeScene(c, 0x00e5ff);
+  camera.position.z = 10;
+
+  const COUNT = 2200;
+  const pos = new Float32Array(COUNT*3);
+  const speed = new Float32Array(COUNT);
+  const size = new Float32Array(COUNT);
+  for(let i=0;i<COUNT;i++){
+    pos[i*3]   = (Math.random()-0.5)*16;
+    pos[i*3+1] = (Math.random()-0.5)*10;
+    pos[i*3+2] = (Math.random()-0.5)*8;
+    speed[i] = 0.004 + Math.random()*0.012;
+    size[i] = 0.02 + Math.random()*0.04;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+  const mat = new THREE.PointsMaterial({color:0x00e5ff, size:0.04, transparent:true, opacity:0.75, blending:THREE.AdditiveBlending, depthWrite:false});
+  const field = new THREE.Points(geo, mat);
+  scene.add(field);
+
+  const flow = new THREE.Points(geo.clone(), new THREE.PointsMaterial({color:0x00ff41, size:0.03, transparent:true, opacity:0.5, blending:THREE.AdditiveBlending, depthWrite:false}));
+  scene.add(flow);
+
+  st.rot = {y:0, z:0};
+  gsap.to(st.rot, {
+    y: -0.8, ease:'none',
+    scrollTrigger:{trigger:'#data', start:'top bottom', end:'bottom top', scrub:1}
+  });
+  gsap.to(st.rot, {
+    z: 0.4, ease:'none',
+    scrollTrigger:{trigger:'#data', start:'top bottom', end:'bottom top', scrub:1}
+  });
+
+  c._st = st;
+  io.observe(c);
+
+  const p1 = field.geometry.attributes.position.array;
+  const p2 = flow.geometry.attributes.position.array;
+  (function loop(){
+    requestAnimationFrame(loop);
+    if(!st.running) return;
+    for(let i=0;i<COUNT;i++){
+      p1[i*3+1] -= speed[i];
+      if(p1[i*3+1] < -5.5) p1[i*3+1] = 5.5;
+      p2[i*3+1] -= speed[i]*1.6;
+      if(p2[i*3+1] < -5.5) p2[i*3+1] = 5.5;
+    }
+    field.geometry.attributes.position.needsUpdate = true;
+    flow.geometry.attributes.position.needsUpdate = true;
+    scene.rotation.y += (st.rot.y - scene.rotation.y)*0.05;
+    scene.rotation.z += (st.rot.z - scene.rotation.z)*0.05;
+    renderer.render(scene, camera);
+  })();
+})();
+
+/* ───────── 4. IA GENERATIVA (torus knot wireframe) ───────── */
+(function gen(){
+  const c = document.getElementById('genCanvas');
+  const {renderer, scene, camera, st} = makeScene(c, 0x00ff41);
+  camera.position.z = 7;
+
+  const group = new THREE.Group();
+  scene.add(group);
+  const knot = new THREE.Mesh(
+    new THREE.TorusKnotGeometry(1.6, 0.45, 140, 18),
+    new THREE.MeshBasicMaterial({color:0x00ff41, wireframe:true, transparent:true, opacity:0.8})
+  );
+  group.add(knot);
+  const core = new THREE.Mesh(
+    new THREE.TorusKnotGeometry(1.6, 0.45, 60, 10),
+    new THREE.MeshBasicMaterial({color:0xff0044, wireframe:true, transparent:true, opacity:0.25})
+  );
+  group.add(core);
+
+  const pulse = {s:1};
+  st.rot = {y:0};
+  gsap.to(st.rot, {
+    y: Math.PI*2, ease:'none',
+    scrollTrigger:{trigger:'#gen', start:'top bottom', end:'bottom top', scrub:1}
+  });
+  gsap.to(pulse, {
+    s: 1.35, ease:'none',
+    scrollTrigger:{trigger:'#gen', start:'top bottom', end:'bottom top', scrub:1}
+  });
+  gsap.to(group.rotation, {
+    x: -0.7, ease:'none',
+    scrollTrigger:{trigger:'#gen', start:'top bottom', end:'bottom top', scrub:1}
+  });
+
+  c._st = st;
+  io.observe(c);
+
+  let t = 0;
+  (function loop(){
+    requestAnimationFrame(loop);
+    if(!st.running) return;
+    t += 0.01;
+    group.rotation.y += (st.rot.y - group.rotation.y)*0.06;
+    group.rotation.z = Math.sin(t*0.5)*0.15;
+    const s = pulse.s + Math.sin(t*3)*0.03;
+    group.scale.set(s,s,s);
+    core.rotation.y -= 0.004;
+    renderer.render(scene, camera);
+  })();
+})();
+
+/* ───────── reveal + contadores ───────── */
+const revObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
+
+const numObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el = e.target;
+    const target = +el.dataset.count;
+    const dur = 1400, t0 = performance.now();
+    function tick(now){
+      const p = Math.min((now-t0)/dur, 1);
+      el.textContent = Math.round(target * (1-Math.pow(1-p,3)));
+      if(p<1) requestAnimationFrame(tick);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(tick);
+    numObs.unobserve(el);
+  });
+},{threshold:0.5});
+document.querySelectorAll('[data-count]').forEach(el=>numObs.observe(el));
+</script>
+</body>
+</html>
