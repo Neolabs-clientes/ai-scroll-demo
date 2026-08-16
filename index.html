@@ -3,79 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEO · La Era de la IA — Demo Scroll 3D</title>
-<meta name="description" content="Demo premium de efectos 3D con scroll: cerebro de partículas, red neuronal, datos e IA generativa. NEO Labs.">
+<title>NEO · CIBERPUNK IA — Demo Scroll 3D</title>
+<meta name="description" content="Demo premium cyberpunk: efectos 3D con bloom, shaders y partículas por scroll. NEO Labs.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0a0a; --bg2:#0d0d12;
-  --green:#00ff41; --red:#ff0044; --cyan:#00e5ff;
-  --white:#fff; --text:rgba(255,255,255,0.85); --muted:rgba(255,255,255,0.5); --dim:rgba(255,255,255,0.25);
-  --border:rgba(255,255,255,0.08);
+  --bg:#05050a; --bg2:#0a0a14;
+  --magenta:#ff00e5; --cyan:#00f0ff; --purple:#8a2be2; --gold:#ffd700;
+  --white:#fff; --text:rgba(255,255,255,0.85); --muted:rgba(255,255,255,0.55); --dim:rgba(255,255,255,0.28);
+  --border:rgba(255,0,229,0.18);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.65;-webkit-font-smoothing:antialiased}
+body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
 canvas{display:block}
 section{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden}
 .wrap{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:0 32px;width:100%}
-.glow{position:absolute;inset:0;z-index:0;pointer-events:none}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:22px 32px;background:linear-gradient(180deg,rgba(10,10,10,0.85),transparent)}
-.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.15rem;letter-spacing:3px;color:var(--white)}
-.logo span{color:var(--green)}
-.nav-tag{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+/* scanlines globales */
+body::after{content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0.06;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,0.8) 2px 4px)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 32px;background:linear-gradient(180deg,rgba(5,5,10,0.9),transparent)}
+.logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.05rem;letter-spacing:4px;color:var(--white);text-shadow:0 0 18px rgba(255,0,229,0.6)}
+.logo span{color:var(--magenta)}
+.nav-tag{font-family:'Share Tech Mono',monospace;font-size:0.68rem;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;text-shadow:0 0 10px rgba(0,240,255,0.5)}
 
 /* HERO */
-#hero .glow{background:radial-gradient(ellipse 60% 50% at 50% 45%,rgba(0,255,65,0.08),transparent 70%)}
-.hero-copy{text-align:center}
-.tag{display:inline-block;font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--green);border:1px solid rgba(0,255,65,0.25);padding:7px 18px;border-radius:50px;margin-bottom:26px;background:rgba(0,255,65,0.04)}
-h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(2.6rem,8vw,6rem);line-height:0.98;color:var(--white);letter-spacing:2px;text-transform:uppercase}
+#hero .glow{background:
+  radial-gradient(ellipse 55% 45% at 50% 42%,rgba(255,0,229,0.12),transparent 70%),
+  radial-gradient(ellipse 40% 35% at 30% 60%,rgba(0,240,255,0.07),transparent 70%)}
+.hero-copy{text-align:center;pointer-events:none}
+.tag{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:0.66rem;letter-spacing:4px;color:var(--magenta);border:1px solid rgba(255,0,229,0.4);padding:8px 20px;border-radius:2px;margin-bottom:28px;background:rgba(255,0,229,0.06);text-shadow:0 0 12px rgba(255,0,229,0.8);box-shadow:0 0 24px rgba(255,0,229,0.15), inset 0 0 18px rgba(255,0,229,0.08)}
+h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(2.4rem,7.5vw,5.6rem);line-height:1;color:var(--white);letter-spacing:3px;text-transform:uppercase}
 h1 .line{display:block;overflow:hidden}
-h1 .line span{display:block;transform:translateY(110%);animation:rise 1s cubic-bezier(.16,1,.3,1) forwards}
-h1 .line:nth-child(2) span{animation-delay:.12s}
-h1 em{font-style:normal;color:var(--green);text-shadow:0 0 40px rgba(0,255,65,0.5)}
+h1 .line span{display:block;transform:translateY(112%);animation:rise 1s cubic-bezier(.16,1,.3,1) forwards}
+h1 .line:nth-child(2) span{animation-delay:.14s}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--magenta),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 24px rgba(255,0,229,0.55))}
 @keyframes rise{to{transform:translateY(0)}}
-.hero-sub{font-size:clamp(1rem,1.8vw,1.3rem);color:var(--muted);max-width:640px;margin:26px auto 0;font-weight:300}
-.scroll-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--dim);font-size:0.62rem;letter-spacing:3px;text-transform:uppercase}
+/* glitch */
+.glitch{position:relative}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;inset:0;opacity:0;pointer-events:none}
+.glitch:hover::before{opacity:.75;color:var(--magenta);animation:glitchA .3s steps(2) infinite;clip-path:inset(20% 0 40% 0)}
+.glitch:hover::after{opacity:.75;color:var(--cyan);animation:glitchB .3s steps(2) infinite;clip-path:inset(60% 0 10% 0)}
+@keyframes glitchA{0%{transform:translate(-3px,-2px)}50%{transform:translate(3px,1px)}100%{transform:translate(-2px,2px)}}
+@keyframes glitchB{0%{transform:translate(3px,2px)}50%{transform:translate(-3px,-1px)}100%{transform:translate(2px,-2px)}}
+.hero-sub{font-size:clamp(1rem,1.7vw,1.25rem);color:var(--muted);max-width:620px;margin:26px auto 0;font-weight:400}
+.hero-sub b{color:var(--cyan);font-weight:600;text-shadow:0 0 14px rgba(0,240,255,0.6)}
+.scroll-hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:0.6rem;letter-spacing:3px;text-transform:uppercase}
 .scroll-hint .mouse{width:22px;height:36px;border:1.5px solid var(--dim);border-radius:12px;position:relative}
-.scroll-hint .mouse::after{content:'';position:absolute;top:6px;left:50%;width:3px;height:7px;margin-left:-1.5px;border-radius:3px;background:var(--green);animation:wheel 1.6s ease-in-out infinite}
+.scroll-hint .mouse::after{content:'';position:absolute;top:6px;left:50%;width:3px;height:7px;margin-left:-1.5px;border-radius:3px;background:var(--magenta);box-shadow:0 0 8px var(--magenta);animation:wheel 1.5s ease-in-out infinite}
 @keyframes wheel{0%{transform:translateY(0);opacity:1}70%{transform:translateY(12px);opacity:0}100%{opacity:0}}
 
-/* CONTENT SECTIONS */
-.effect-sec .glow{background:radial-gradient(ellipse 55% 55% at 50% 50%,rgba(0,255,65,0.06),transparent 70%)}
+/* SECTIONS */
 .effect-sec .wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.effect-canvas{position:relative;z-index:1;height:60vh;min-height:420px;width:100%}
+.effect-canvas{position:relative;z-index:1;height:62vh;min-height:430px;width:100%}
 .effect-canvas canvas{position:absolute;inset:0;width:100%;height:100%}
-.sec-label{font-size:0.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--green);margin-bottom:14px;font-weight:600}
-.sec-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.9rem,4vw,3.2rem);font-weight:700;color:var(--white);line-height:1.05;margin-bottom:20px;text-transform:uppercase;letter-spacing:1px}
-.sec-title .accent-red{color:var(--red)}
-.sec-title .accent-cyan{color:var(--cyan)}
-.sec-title .accent-green{color:var(--green)}
-.sec-body{color:var(--muted);font-size:1.02rem;font-weight:300;max-width:520px}
+.sec-label{font-family:'Share Tech Mono',monospace;font-size:0.66rem;letter-spacing:4px;color:var(--magenta);margin-bottom:14px;text-shadow:0 0 10px rgba(255,0,229,0.6)}
+.sec-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.7rem,3.6vw,2.9rem);font-weight:900;color:var(--white);line-height:1.05;margin-bottom:20px;text-transform:uppercase;letter-spacing:2px;text-shadow:0 0 30px rgba(255,0,229,0.25)}
+.sec-title .c-magenta{color:var(--magenta);text-shadow:0 0 24px rgba(255,0,229,0.7)}
+.sec-title .c-cyan{color:var(--cyan);text-shadow:0 0 24px rgba(0,240,255,0.7)}
+.sec-body{color:var(--muted);font-size:1.06rem;font-weight:400;max-width:520px}
 .sec-body strong{color:var(--white);font-weight:600}
-.sec-stats{display:flex;gap:34px;margin-top:30px;flex-wrap:wrap}
-.stat-num{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:700;color:var(--white)}
-.stat-lbl{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:2px}
-#neural .glow{background:radial-gradient(ellipse 55% 55% at 50% 50%,rgba(255,0,68,0.07),transparent 70%)}
-#data .glow{background:radial-gradient(ellipse 55% 55% at 50% 50%,rgba(0,229,255,0.07),transparent 70%)}
-#gen .glow{background:radial-gradient(ellipse 55% 55% at 50% 50%,rgba(0,255,65,0.06),transparent 70%)}
+.sec-stats{display:flex;gap:26px;margin-top:32px;flex-wrap:wrap}
+.stat{background:rgba(10,10,20,0.7);border:1px solid var(--border);padding:16px 22px;min-width:130px;backdrop-filter:blur(6px);box-shadow:0 0 24px rgba(255,0,229,0.08), inset 0 0 18px rgba(255,0,229,0.04)}
+.stat-num{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;color:var(--cyan);text-shadow:0 0 16px rgba(0,240,255,0.6)}
+.stat-lbl{font-family:'Share Tech Mono',monospace;font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-top:3px}
+#neural .glow{background:radial-gradient(ellipse 55% 55% at 50% 50%,rgba(255,0,229,0.08),transparent 70%)}
+#data .glow{background:radial-gradient(ellipse 55% 55% at 50% 50%,rgba(0,240,255,0.08),transparent 70%)}
+#gen .glow{background:radial-gradient(ellipse 55% 55% at 50% 50%,rgba(138,43,226,0.10),transparent 70%)}
 
 /* CTA */
-#cta{min-height:70vh;text-align:center;background:radial-gradient(ellipse 50% 60% at 50% 50%,rgba(0,255,65,0.05),transparent 70%)}
-#cta h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,5vw,4rem);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px;line-height:1.02}
-#cta h2 em{font-style:normal;color:var(--green)}
-#cta p{color:var(--muted);max-width:520px;margin:22px auto 36px;font-weight:300}
-.btn{display:inline-block;font-family:'Space Grotesk',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#000;background:var(--green);padding:18px 44px;border-radius:50px;text-decoration:none;box-shadow:0 0 40px rgba(0,255,65,0.35);transition:all .3s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 0 60px rgba(0,255,65,0.55)}
+#cta{min-height:75vh;text-align:center;background:radial-gradient(ellipse 50% 60% at 50% 50%,rgba(255,0,229,0.09),transparent 70%)}
+#cta h2{font-family:'Orbitron',sans-serif;font-size:clamp(1.9rem,4.5vw,3.6rem);font-weight:900;color:var(--white);text-transform:uppercase;letter-spacing:3px;line-height:1.02}
+#cta h2 em{font-style:normal;background:linear-gradient(90deg,var(--magenta),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 26px rgba(255,0,229,0.5))}
+#cta p{color:var(--muted);max-width:540px;margin:22px auto 38px;font-size:1.1rem}
+.btn{display:inline-block;font-family:'Orbitron',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#05050a;background:linear-gradient(90deg,var(--magenta),var(--cyan));padding:18px 46px;text-decoration:none;box-shadow:0 0 44px rgba(255,0,229,0.45);transition:all .3s;border:1px solid rgba(255,255,255,0.25)}
+.btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 0 70px rgba(0,240,255,0.6)}
 
-footer{padding:30px 32px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:0.75rem;color:var(--dim)}
-footer a{color:var(--green);text-decoration:none}
+footer{padding:28px 32px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--dim)}
+footer a{color:var(--cyan);text-decoration:none;text-shadow:0 0 8px rgba(0,240,255,0.5)}
 
-/* reveal */
 .reveal{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
@@ -83,11 +93,10 @@ footer a{color:var(--green);text-decoration:none}
   .effect-sec .wrap{grid-template-columns:1fr;gap:10px}
   .effect-canvas{height:46vh;min-height:320px;order:-1}
   .sec-body{max-width:none}
-  .glow{opacity:.8}
 }
 @media(max-width:560px){
-  nav{padding:18px 20px}
-  .wrap{padding:0 22px}
+  nav{padding:16px 20px}
+  .wrap{padding:0 20px}
   .scroll-hint{display:none}
 }
 </style>
@@ -95,80 +104,73 @@ footer a{color:var(--green);text-decoration:none}
 <body>
 
 <nav>
-  <div class="logo">NEO<span>.</span></div>
-  <div class="nav-tag">Demo · Scroll 3D</div>
+  <div class="logo">NEO<span>_</span></div>
+  <div class="nav-tag">// demo_scroll_3d_cyberpunk</div>
 </nav>
 
-<!-- HERO: cerebro de particulas -->
+<!-- HERO: CEREBRO CIBERNETICO -->
 <section id="hero">
   <div class="glow"></div>
-  <div class="effect-canvas" id="brainCanvasWrap" style="position:absolute;inset:0;height:100%;min-height:0;z-index:1">
+  <div class="effect-canvas" id="brainWrap" style="position:absolute;inset:0;height:100%;min-height:0;z-index:1">
     <canvas id="brainCanvas"></canvas>
   </div>
   <div class="wrap hero-copy">
-    <div class="tag">Inteligencia Artificial</div>
+    <div class="tag">&gt; SECTOR_IA-2077_ACTIVADO</div>
     <h1>
-      <span class="line"><span>LA ERA</span></span>
-      <span class="line"><span>DE LA <em>IA</em></span></span>
+      <span class="line"><span class="glitch" data-text="CEREBRO">CEREBRO</span></span>
+      <span class="line"><span class="glitch" data-text="CIBERNÉTICO"><em>CIBERNÉTICO</em></span></span>
     </h1>
-    <p class="hero-sub">Máquinas que aprenden, crean y deciden. Un recorrido visual por la tecnología que está reescribiendo el mundo.</p>
+    <p class="hero-sub">Máquinas que aprenden, crean y deciden. <b>Conecta con el futuro</b> — un recorrido visual por la inteligencia artificial.</p>
   </div>
-  <div class="scroll-hint"><div class="mouse"></div>SCROLL</div>
+  <div class="scroll-hint"><div class="mouse"></div>DESCENDER</div>
 </section>
 
-<!-- REDES NEURONALES -->
+<!-- RED NEURONAL -->
 <section class="effect-sec" id="neural">
   <div class="glow"></div>
   <div class="wrap">
-    <div class="effect-canvas" id="neuralCanvasWrap">
-      <canvas id="neuralCanvas"></canvas>
-    </div>
+    <div class="effect-canvas" id="neuralWrap"><canvas id="neuralCanvas"></canvas></div>
     <div class="copy reveal">
-      <div class="sec-label">01 · Aprendizaje</div>
-      <h2 class="sec-title">Redes <span class="accent-red">Neuronales</span></h2>
-      <p class="sec-body">La IA aprende imitando al cerebro: <strong>miles de millones de conexiones</strong> que se ajustan con cada ejemplo. Cada nodo recibe señales, las pondera y decide si se activa. Así nace el reconocimiento de voz, la visión artificial y los modelos que hoy usamos.</p>
+      <div class="sec-label">01 // APRENDIZAJE</div>
+      <h2 class="sec-title">Red <span class="c-magenta">Neuronal</span></h2>
+      <p class="sec-body">La IA imita al cerebro: <strong>miles de millones de conexiones</strong> que se reajustan con cada ejemplo. Impulsos de energía recorren la red en tiempo real — así nace el reconocimiento de voz y la visión artificial.</p>
       <div class="sec-stats">
-        <div><div class="stat-num" data-count="175">0</div><div class="stat-lbl">Billones de parámetros</div></div>
-        <div><div class="stat-num">0.1s</div><div class="stat-lbl">Respuesta media</div></div>
-        <div><div class="stat-num" data-count="100">0</div><div class="stat-lbl">Idiomas soportados</div></div>
+        <div class="stat"><div class="stat-num" data-count="175">0</div><div class="stat-lbl">Billones de parámetros</div></div>
+        <div class="stat"><div class="stat-num">0.1s</div><div class="stat-lbl">Respuesta media</div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- DATOS -->
+<!-- FLUJO DE DATOS -->
 <section class="effect-sec" id="data">
   <div class="glow"></div>
   <div class="wrap">
     <div class="copy reveal">
-      <div class="sec-label">02 · Combustible</div>
-      <h2 class="sec-title">El poder de los <span class="accent-cyan">datos</span></h2>
-      <p class="sec-body">Cada búsqueda, cada clic, cada conversación genera datos. La IA los convierte en <strong>decisiones, predicciones y automatización</strong>. Cuantos más datos, más precisa es la máquina: el dato es el nuevo petróleo, y fluye en tiempo real.</p>
+      <div class="sec-label">02 // COMBUSTIBLE</div>
+      <h2 class="sec-title">Flujo de <span class="c-cyan">Datos</span></h2>
+      <p class="sec-body">Cada clic, cada conversación genera datos. Viaja por el <strong>túnel de información</strong> que alimenta a la IA: corrientes de partículas que se convierten en decisiones y predicciones en tiempo real.</p>
       <div class="sec-stats">
-        <div><div class="stat-num">2.5Q</div><div class="stat-lbl">Bytes generados al día</div></div>
-        <div><div class="stat-num" data-count="90">0</div><div class="stat-lbl">% del mundo digital</div></div>
+        <div class="stat"><div class="stat-num">2.5Q</div><div class="stat-lbl">Bytes generados al día</div></div>
+        <div class="stat"><div class="stat-num" data-count="90">0</div><div class="stat-lbl">% del mundo digital</div></div>
       </div>
     </div>
-    <div class="effect-canvas" id="dataCanvasWrap">
-      <canvas id="dataCanvas"></canvas>
-    </div>
+    <div class="effect-canvas" id="dataWrap"><canvas id="dataCanvas"></canvas></div>
   </div>
 </section>
 
-<!-- IA GENERATIVA -->
+<!-- NUCLEO GENERATIVO -->
 <section class="effect-sec" id="gen">
   <div class="glow"></div>
   <div class="wrap">
-    <div class="effect-canvas" id="genCanvasWrap">
-      <canvas id="genCanvas"></canvas>
-    </div>
+    <div class="effect-canvas" id="genWrap"><canvas id="genCanvas"></canvas></div>
     <div class="copy reveal">
-      <div class="sec-label">03 · Creación</div>
-      <h2 class="sec-title">IA <span class="accent-green">Generativa</span></h2>
-      <p class="sec-body">Modelos que <strong>crean texto, imagen, código y música</strong> a partir de un prompt. No memorizan: aprenden patrones y generan algo nuevo. Es la tecnología detrás de los asistentes que automatizan trabajo y multiplican la productividad.</p>
+      <div class="sec-label">03 // CREACIÓN</div>
+      <h2 class="sec-title">Núcleo <span class="c-magenta">Generativo</span></h2>
+      <p class="sec-body">Modelos que <strong>crean texto, imagen, código y música</strong> a partir de un prompt. Un núcleo de materia digital que muta con cada iteración — la tecnología que automatiza trabajo y multiplica la productividad.</p>
       <div class="sec-stats">
-        <div><div class="stat-num" data-count="200">0</div><div class="stat-lbl">Mil millones de usuarios</div></div>
-        <div><div class="stat-num" data-count="7">0</div><div class="stat-lbl">Horas ahorradas / semana</div></div>
+        <div class="stat"><div class="stat-num" data-count="200">0</div><div class="stat-lbl">Mil millones de usuarios</div></div>
+        <div class="stat"><div class="stat-num" data-count="7">0</div><div class="stat-lbl">Horas ahorradas / semana</div></div>
       </div>
     </div>
   </div>
@@ -177,287 +179,373 @@ footer a{color:var(--green);text-decoration:none}
 <!-- CTA -->
 <section id="cta">
   <div class="wrap reveal" style="text-align:center">
-    <h2>El futuro se<br>escribe con <em>código</em></h2>
-    <p>Webs premium con efectos 3D e inteligencia artificial para tu negocio. Hecho por NEO Labs.</p>
-    <a class="btn" href="https://neolabs.es" target="_blank" rel="noopener">NEO Labs</a>
+    <h2>EL FUTURO SE<br>ESCRIBE EN <em>CÓDIGO</em></h2>
+    <p>Webs premium con efectos 3D e inteligencia artificial. Fabricado por NEO Labs.</p>
+    <a class="btn" href="https://neolabs.es" target="_blank" rel="noopener">NEO LABS //</a>
   </div>
 </section>
 
 <footer>
-  <div>© 2026 NEO Labs · Demo de efectos scroll 3D</div>
-  <div>Three.js · GSAP ScrollTrigger · Hecho con <a href="https://neolabs.es" target="_blank" rel="noopener">NEO</a></div>
+  <div>© 2026 NEO LABS · DEMO_EFECTOS_SCROLL_3D</div>
+  <div>THREE.JS + GSAP + <a href="https://neolabs.es" target="_blank" rel="noopener">NEO</a></div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
-<script>
+<script type="importmap">
+{"imports":{
+  "three":"https://unpkg.com/three@0.153.0/build/three.module.js",
+  "three/addons/":"https://unpkg.com/three@0.153.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+
 gsap.registerPlugin(ScrollTrigger);
 
-/* ───────── utilidades ───────── */
-function makeScene(canvas, color){
+/* ───── utilidades ───── */
+function makeScene(canvas){
   const wrap = canvas.parentElement;
   const renderer = new THREE.WebGLRenderer({canvas, antialias:false, alpha:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
-  camera.position.z = 8;
-  const st = {running:false, rot:{x:0,y:0,z:0}};
+  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
+  camera.position.z = 9;
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  const bloom = new UnrealBloomPass(new THREE.Vector2(2,2), 1.15, 0.65, 0.12);
+  composer.addPass(bloom);
+  if (OutputPass) composer.addPass(new OutputPass());
+  const st = {running:false};
   function resize(){
     const r = wrap.getBoundingClientRect();
-    renderer.setSize(r.width, r.height, false);
-    camera.aspect = r.width / r.height;
-    camera.updateProjectionMatrix();
+    const w = Math.max(1, r.width), h = Math.max(1, r.height);
+    renderer.setSize(w, h, false);
+    camera.aspect = w/h; camera.updateProjectionMatrix();
+    composer.setSize(w, h);
   }
   new ResizeObserver(resize).observe(wrap);
   resize();
-  return {renderer, scene, camera, st};
+  return {renderer, scene, camera, composer, bloom, st};
 }
 const io = new IntersectionObserver(entries=>{
   entries.forEach(e=>{ if(e.target._st) e.target._st.running = e.isIntersecting; });
-},{threshold:0.05});
+},{threshold:0.04});
 
-/* ───────── 1. CEREBRO (partículas + wireframe) ───────── */
+/* hash + noise para shaders */
+const NOISE = `
+float hash(vec3 p){ p = fract(p*0.3183099+.1); p *= 17.0; return fract(p.x*p.y*p.z*(p.x+p.y+p.z)); }
+float noise(vec3 p){
+  vec3 i = floor(p); vec3 f = fract(p); f = f*f*(3.0-2.0*f);
+  return mix(mix(mix(hash(i+vec3(0,0,0)),hash(i+vec3(1,0,0)),f.x),
+                 mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),
+             mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),
+                 mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);
+}
+float fbm(vec3 p){ float v=0.0; float a=0.5; for(int i=0;i<4;i++){ v+=a*noise(p); p*=2.03; a*=0.5; } return v; }
+`;
+
+/* ───── 1. CEREBRO CIBERNETICO ───── */
 (function brain(){
   const c = document.getElementById('brainCanvas');
-  const {renderer, scene, camera, st} = makeScene(c, 0x00ff41);
+  const {scene, camera, composer, bloom, st} = makeScene(c);
+  camera.position.z = 10;
 
-  const count = 2600;
-  const pos = new Float32Array(count*3);
+  const COUNT = 3200;
+  const pos = new Float32Array(COUNT*3);
+  const seed = new Float32Array(COUNT);
   const geo = new THREE.BufferGeometry();
-  for(let i=0;i<count;i++){
-    const r = 2.6 * Math.cbrt(Math.random());
-    const theta = Math.random()*Math.PI*2;
-    const phi = Math.acos(2*Math.random()-1);
-    pos[i*3]   = r*Math.sin(phi)*Math.cos(theta);
-    pos[i*3+1] = r*Math.sin(phi)*Math.sin(theta);
-    pos[i*3+2] = r*Math.cos(phi);
+  for(let i=0;i<COUNT;i++){
+    const r = 2.7 * Math.cbrt(Math.random());
+    const th = Math.random()*Math.PI*2, ph = Math.acos(2*Math.random()-1);
+    pos[i*3]=r*Math.sin(ph)*Math.cos(th); pos[i*3+1]=r*Math.sin(ph)*Math.sin(th); pos[i*3+2]=r*Math.cos(ph);
+    seed[i] = Math.random()*6.28;
   }
   geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
-  const mat = new THREE.PointsMaterial({color:0x00ff41, size:0.035, transparent:true, opacity:0.9, blending:THREE.AdditiveBlending, depthWrite:false});
-  const brain = new THREE.Points(geo, mat);
+  geo.setAttribute('aSeed', new THREE.BufferAttribute(seed,1));
+
+  const brainMat = new THREE.ShaderMaterial({
+    uniforms:{uTime:{value:0}, uColorA:{value:new THREE.Color(0xff00e5)}, uColorB:{value:new THREE.Color(0x00f0ff)}},
+    vertexShader:`
+      attribute float aSeed;
+      uniform float uTime;
+      varying float vMix;
+      ${NOISE}
+      void main(){
+        vec3 p = position;
+        float n = fbm(p*0.9 + vec3(0.0, uTime*0.25, 0.0));
+        p += normalize(p) * n * 0.55;
+        vMix = smoothstep(-1.0, 1.0, p.y);
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_PointSize = (2.4 + n*3.2) * (240.0 / -mv.z);
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader:`
+      uniform vec3 uColorA; uniform vec3 uColorB;
+      varying float vMix;
+      void main(){
+        float d = length(gl_PointCoord - vec2(0.5));
+        if(d > 0.5) discard;
+        float a = smoothstep(0.5, 0.0, d);
+        vec3 col = mix(uColorA, uColorB, vMix);
+        gl_FragColor = vec4(col, a*0.95);
+      }`,
+    transparent:true, depthWrite:false, blending:THREE.AdditiveBlending
+  });
+  const brain = new THREE.Points(geo, brainMat);
   scene.add(brain);
 
-  const wire = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(2.15, 1),
-    new THREE.MeshBasicMaterial({color:0x00ff41, wireframe:true, transparent:true, opacity:0.12})
-  );
+  const wire = new THREE.Mesh(new THREE.IcosahedronGeometry(2.7, 1), new THREE.MeshBasicMaterial({color:0xff00e5, wireframe:true, transparent:true, opacity:0.08}));
   scene.add(wire);
+  const ring1 = new THREE.Mesh(new THREE.TorusGeometry(3.4, 0.012, 8, 120), new THREE.MeshBasicMaterial({color:0x00f0ff, transparent:true, opacity:0.5, blending:THREE.AdditiveBlending}));
+  ring1.rotation.x = Math.PI/2.2;
+  scene.add(ring1);
+  const ring2 = new THREE.Mesh(new THREE.TorusGeometry(3.9, 0.008, 8, 120), new THREE.MeshBasicMaterial({color:0xff00e5, transparent:true, opacity:0.35, blending:THREE.AdditiveBlending}));
+  ring2.rotation.x = Math.PI/1.7; ring2.rotation.y = 0.5;
+  scene.add(ring2);
 
-  const inner = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(0.9, 2),
-    new THREE.MeshBasicMaterial({color:0x00ff41, wireframe:true, transparent:true, opacity:0.18})
-  );
-  scene.add(inner);
+  // suelo de rejilla synthwave
+  const grid = new THREE.GridHelper(60, 40, 0xff00e5, 0x00f0ff);
+  grid.material.transparent = true; grid.material.opacity = 0.22;
+  grid.position.y = -4.2;
+  scene.add(grid);
+  const grid2 = new THREE.GridHelper(60, 40, 0x00f0ff, 0xff00e5);
+  grid2.material.transparent = true; grid2.material.opacity = 0.1;
+  grid2.position.y = -4.0;
+  scene.add(grid2);
 
   const group = new THREE.Group();
-  group.add(brain, wire, inner);
+  group.add(brain, wire, ring1, ring2);
   scene.add(group);
 
   st.rot = {y:0, z:0, hoverX:0, hoverY:0};
-
-  gsap.to(st.rot, {
-    y: Math.PI*2,
-    ease:'none',
-    scrollTrigger:{trigger:'#hero', start:'top top', end:'bottom top', scrub:1}
-  });
-  gsap.to(st.rot, {
-    z: -0.9,
-    ease:'none',
-    scrollTrigger:{trigger:'#hero', start:'top top', end:'bottom top', scrub:1}
-  });
-  gsap.to(group.position, {
-    y: 2.4, scale: 1.4,
-    ease:'none',
-    scrollTrigger:{trigger:'#hero', start:'top top', end:'bottom top', scrub:1}
-  });
+  gsap.to(st.rot, {y: Math.PI*2, ease:'none', scrollTrigger:{trigger:'#hero', start:'top top', end:'bottom top', scrub:1}});
+  gsap.to(st.rot, {z: -1.1, ease:'none', scrollTrigger:{trigger:'#hero', start:'top top', end:'bottom top', scrub:1}});
+  gsap.to(group.position, {y: 3.0, scale: 1.5, ease:'none', scrollTrigger:{trigger:'#hero', start:'top top', end:'bottom top', scrub:1}});
 
   window.addEventListener('mousemove', e=>{
-    st.rot.hoverX = (e.clientX/window.innerWidth - 0.5)*0.8;
-    st.rot.hoverY = (e.clientY/window.innerHeight - 0.5)*0.8;
+    st.rot.hoverX = (e.clientX/window.innerWidth - 0.5)*0.9;
+    st.rot.hoverY = (e.clientY/window.innerHeight - 0.5)*0.9;
   });
 
-  c._st = st;
-  io.observe(c);
-
+  c._st = st; io.observe(c);
+  let t = 0, gz = 0;
   (function loop(){
     requestAnimationFrame(loop);
     if(!st.running) return;
-    group.rotation.y += (st.rot.y - group.rotation.y)*0.08;
-    group.rotation.x += (st.rot.hoverY - group.rotation.x)*0.05;
-    group.rotation.z += ((st.rot.z + st.rot.hoverX) - group.rotation.z)*0.05;
-    wire.rotation.y -= 0.001;
-    inner.rotation.y += 0.002;
-    renderer.render(scene, camera);
+    t += 0.012;
+    brainMat.uniforms.uTime.value = t;
+    group.rotation.y += (st.rot.y - group.rotation.y)*0.07;
+    group.rotation.x += (st.rot.hoverY - group.rotation.x)*0.045;
+    group.rotation.z += ((st.rot.z + st.rot.hoverX) - group.rotation.z)*0.045;
+    ring1.rotation.z += 0.004; ring2.rotation.z -= 0.003;
+    gz += 0.55 + Math.min(st.rot.y*0.0,0); grid.position.z = (gz % 2.2); grid2.position.z = (gz % 2.2) + 1.1;
+    composer.render();
   })();
 })();
 
-/* ───────── 2. RED NEURONAL ───────── */
+/* ───── 2. RED NEURONAL CON PULSOS ───── */
 (function neural(){
   const c = document.getElementById('neuralCanvas');
-  const {renderer, scene, camera, st} = makeScene(c, 0xff0044);
+  const {scene, camera, composer, st} = makeScene(c);
   camera.position.z = 9;
 
   const group = new THREE.Group();
   scene.add(group);
 
-  // nodos
-  const N = 26;
+  const N = 24;
   const nodes = [];
-  const nodeGeo = new THREE.SphereGeometry(0.09, 10, 10);
   for(let i=0;i<N;i++){
-    const x=(Math.random()-0.5)*8, y=(Math.random()-0.5)*6, z=(Math.random()-0.5)*5;
-    nodes.push(new THREE.Vector3(x,y,z));
-    const m = new THREE.Mesh(nodeGeo, new THREE.MeshBasicMaterial({color: Math.random()>0.5?0xff0044:0x00ff41, transparent:true, opacity:0.9}));
-    m.position.set(x,y,z);
-    group.add(m);
+    nodes.push(new THREE.Vector3((Math.random()-0.5)*8.5,(Math.random()-0.5)*6.5,(Math.random()-0.5)*5));
   }
-  // conexiones entre nodos cercanos
+  const nodeMat = new THREE.MeshBasicMaterial({color:0xff00e5});
+  const nodeGeo = new THREE.SphereGeometry(0.11, 12, 12);
+  nodes.forEach(v=>{ const m = new THREE.Mesh(nodeGeo, nodeMat); m.position.copy(v); group.add(m); });
+
+  const conns = [];
+  for(let i=0;i<N;i++) for(let j=i+1;j<N;j++){
+    if(nodes[i].distanceTo(nodes[j]) < 2.8) conns.push([i,j]);
+  }
   const pts = [];
-  for(let i=0;i<N;i++){
-    for(let j=i+1;j<N;j++){
-      if(nodes[i].distanceTo(nodes[j]) < 2.6){
-        pts.push(nodes[i].x,nodes[i].y,nodes[i].z, nodes[j].x,nodes[j].y,nodes[j].z);
-      }
-    }
-  }
+  conns.forEach(([i,j])=>{ pts.push(nodes[i].x,nodes[i].y,nodes[i].z, nodes[j].x,nodes[j].y,nodes[j].z); });
   const lineGeo = new THREE.BufferGeometry();
   lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(pts,3));
-  const lines = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({color:0xff0044, transparent:true, opacity:0.35, blending:THREE.AdditiveBlending}));
+  const lines = new THREE.LineSegments(lineGeo, new THREE.LineBasicMaterial({color:0xff00e5, transparent:true, opacity:0.3, blending:THREE.AdditiveBlending}));
   group.add(lines);
 
+  // pulsos de energia
+  const P = 46;
+  const pulsePos = new Float32Array(P*3);
+  const pulseData = []; // {conn, t, speed}
+  for(let i=0;i<P;i++){
+    const ci = Math.floor(Math.random()*conns.length);
+    pulseData.push({ci, t: Math.random(), speed: 0.003+Math.random()*0.006});
+  }
+  const pulseGeo = new THREE.BufferGeometry();
+  pulseGeo.setAttribute('position', new THREE.BufferAttribute(pulsePos,3));
+  const pulses = new THREE.Points(pulseGeo, new THREE.PointsMaterial({color:0x00f0ff, size:0.16, transparent:true, opacity:1, blending:THREE.AdditiveBlending, depthWrite:false}));
+  group.add(pulses);
+
   st.rot = {y:0.4};
-  gsap.to(st.rot, {
-    y: Math.PI*2 + 0.4, ease:'none',
-    scrollTrigger:{trigger:'#neural', start:'top bottom', end:'bottom top', scrub:1}
-  });
-  gsap.fromTo(group.rotation, {x:0.2}, {
-    x: -0.5, ease:'none',
-    scrollTrigger:{trigger:'#neural', start:'top bottom', end:'bottom top', scrub:1}
-  });
+  gsap.to(st.rot, {y: Math.PI*2+0.4, ease:'none', scrollTrigger:{trigger:'#neural', start:'top bottom', end:'bottom top', scrub:1}});
+  gsap.fromTo(group.rotation, {x:0.25},{x:-0.55, ease:'none', scrollTrigger:{trigger:'#neural', start:'top bottom', end:'bottom top', scrub:1}});
 
-  c._st = st;
-  io.observe(c);
-
+  c._st = st; io.observe(c);
   (function loop(){
     requestAnimationFrame(loop);
     if(!st.running) return;
+    const arr = pulseGeo.attributes.position.array;
+    for(let i=0;i<P;i++){
+      const pd = pulseData[i];
+      pd.t += pd.speed;
+      if(pd.t >= 1) { pd.t = 0; pd.ci = Math.floor(Math.random()*conns.length); }
+      const [a,b] = conns[pd.ci];
+      const va = nodes[a], vb = nodes[b];
+      arr[i*3]   = va.x + (vb.x-va.x)*pd.t;
+      arr[i*3+1] = va.y + (vb.y-va.y)*pd.t;
+      arr[i*3+2] = va.z + (vb.z-va.z)*pd.t;
+    }
+    pulseGeo.attributes.position.needsUpdate = true;
     group.rotation.y += (st.rot.y - group.rotation.y)*0.06;
-    lines.rotation.y += 0.0015;
-    renderer.render(scene, camera);
+    lines.rotation.y += 0.002;
+    composer.render();
   })();
 })();
 
-/* ───────── 3. FLUJO DE DATOS ───────── */
+/* ───── 3. TUNEL DE DATOS ───── */
 (function data(){
   const c = document.getElementById('dataCanvas');
-  const {renderer, scene, camera, st} = makeScene(c, 0x00e5ff);
-  camera.position.z = 10;
+  const {scene, camera, composer, st} = makeScene(c);
+  camera.position.z = 0;
 
-  const COUNT = 2200;
-  const pos = new Float32Array(COUNT*3);
-  const speed = new Float32Array(COUNT);
-  const size = new Float32Array(COUNT);
-  for(let i=0;i<COUNT;i++){
-    pos[i*3]   = (Math.random()-0.5)*16;
-    pos[i*3+1] = (Math.random()-0.5)*10;
-    pos[i*3+2] = (Math.random()-0.5)*8;
-    speed[i] = 0.004 + Math.random()*0.012;
-    size[i] = 0.02 + Math.random()*0.04;
-  }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
-  const mat = new THREE.PointsMaterial({color:0x00e5ff, size:0.04, transparent:true, opacity:0.75, blending:THREE.AdditiveBlending, depthWrite:false});
-  const field = new THREE.Points(geo, mat);
-  scene.add(field);
-
-  const flow = new THREE.Points(geo.clone(), new THREE.PointsMaterial({color:0x00ff41, size:0.03, transparent:true, opacity:0.5, blending:THREE.AdditiveBlending, depthWrite:false}));
-  scene.add(flow);
-
-  st.rot = {y:0, z:0};
-  gsap.to(st.rot, {
-    y: -0.8, ease:'none',
-    scrollTrigger:{trigger:'#data', start:'top bottom', end:'bottom top', scrub:1}
-  });
-  gsap.to(st.rot, {
-    z: 0.4, ease:'none',
-    scrollTrigger:{trigger:'#data', start:'top bottom', end:'bottom top', scrub:1}
-  });
-
-  c._st = st;
-  io.observe(c);
-
-  const p1 = field.geometry.attributes.position.array;
-  const p2 = flow.geometry.attributes.position.array;
-  (function loop(){
-    requestAnimationFrame(loop);
-    if(!st.running) return;
-    for(let i=0;i<COUNT;i++){
-      p1[i*3+1] -= speed[i];
-      if(p1[i*3+1] < -5.5) p1[i*3+1] = 5.5;
-      p2[i*3+1] -= speed[i]*1.6;
-      if(p2[i*3+1] < -5.5) p2[i*3+1] = 5.5;
+  function stream(color, radius, dir, count){
+    const pos = new Float32Array(count*3);
+    const spd = new Float32Array(count);
+    for(let i=0;i<count;i++){
+      const a = Math.random()*Math.PI*2;
+      const r = radius * (0.35 + Math.random()*0.65);
+      pos[i*3]=Math.cos(a)*r; pos[i*3+1]=Math.sin(a)*r; pos[i*3+2]=(Math.random()-0.5)*40;
+      spd[i] = 0.25+Math.random()*0.5;
     }
-    field.geometry.attributes.position.needsUpdate = true;
-    flow.geometry.attributes.position.needsUpdate = true;
-    scene.rotation.y += (st.rot.y - scene.rotation.y)*0.05;
-    scene.rotation.z += (st.rot.z - scene.rotation.z)*0.05;
-    renderer.render(scene, camera);
-  })();
-})();
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos,3));
+    const m = new THREE.PointsMaterial({color, size:0.09, transparent:true, opacity:0.9, blending:THREE.AdditiveBlending, depthWrite:false});
+    const p = new THREE.Points(g, m);
+    p.userData = {spd, dir};
+    scene.add(p);
+    return p;
+  }
+  const s1 = stream(0xff00e5, 4.4, 1, 1400);
+  const s2 = stream(0x00f0ff, 3.2, -1, 1400);
+  const s3 = stream(0x8a2be2, 5.2, 1, 900);
+  const core = new THREE.Mesh(new THREE.SphereGeometry(1.1, 24, 24), new THREE.MeshBasicMaterial({color:0xff00e5, wireframe:true, transparent:true, opacity:0.25}));
+  scene.add(core);
 
-/* ───────── 4. IA GENERATIVA (torus knot wireframe) ───────── */
-(function gen(){
-  const c = document.getElementById('genCanvas');
-  const {renderer, scene, camera, st} = makeScene(c, 0x00ff41);
-  camera.position.z = 7;
+  st.rot = {z:0, dolly:0};
+  gsap.to(st.rot, {z: Math.PI*2, ease:'none', scrollTrigger:{trigger:'#data', start:'top bottom', end:'bottom top', scrub:1}});
+  gsap.to(st.rot, {dolly: -5, ease:'none', scrollTrigger:{trigger:'#data', start:'top bottom', end:'bottom top', scrub:1}});
 
-  const group = new THREE.Group();
-  scene.add(group);
-  const knot = new THREE.Mesh(
-    new THREE.TorusKnotGeometry(1.6, 0.45, 140, 18),
-    new THREE.MeshBasicMaterial({color:0x00ff41, wireframe:true, transparent:true, opacity:0.8})
-  );
-  group.add(knot);
-  const core = new THREE.Mesh(
-    new THREE.TorusKnotGeometry(1.6, 0.45, 60, 10),
-    new THREE.MeshBasicMaterial({color:0xff0044, wireframe:true, transparent:true, opacity:0.25})
-  );
-  group.add(core);
-
-  const pulse = {s:1};
-  st.rot = {y:0};
-  gsap.to(st.rot, {
-    y: Math.PI*2, ease:'none',
-    scrollTrigger:{trigger:'#gen', start:'top bottom', end:'bottom top', scrub:1}
-  });
-  gsap.to(pulse, {
-    s: 1.35, ease:'none',
-    scrollTrigger:{trigger:'#gen', start:'top bottom', end:'bottom top', scrub:1}
-  });
-  gsap.to(group.rotation, {
-    x: -0.7, ease:'none',
-    scrollTrigger:{trigger:'#gen', start:'top bottom', end:'bottom top', scrub:1}
-  });
-
-  c._st = st;
-  io.observe(c);
-
+  c._st = st; io.observe(c);
   let t = 0;
   (function loop(){
     requestAnimationFrame(loop);
     if(!st.running) return;
     t += 0.01;
-    group.rotation.y += (st.rot.y - group.rotation.y)*0.06;
-    group.rotation.z = Math.sin(t*0.5)*0.15;
-    const s = pulse.s + Math.sin(t*3)*0.03;
-    group.scale.set(s,s,s);
-    core.rotation.y -= 0.004;
-    renderer.render(scene, camera);
+    [s1,s2,s3].forEach(p=>{
+      const arr = p.geometry.attributes.position.array;
+      const n = arr.length/3;
+      const spd = p.userData.spd;
+      for(let i=0;i<n;i++){
+        arr[i*3+2] += spd[i] * p.userData.dir;
+        if(p.userData.dir>0 && arr[i*3+2] > 20) arr[i*3+2] = -20;
+        if(p.userData.dir<0 && arr[i*3+2] < -20) arr[i*3+2] = 20;
+      }
+      p.geometry.attributes.position.needsUpdate = true;
+      p.rotation.z += 0.0012 * p.userData.dir;
+    });
+    core.rotation.y += 0.008; core.rotation.x += 0.004;
+    camera.position.z += (st.rot.dolly - camera.position.z)*0.04;
+    scene.rotation.z += (st.rot.z*0.12 - scene.rotation.z)*0.05;
+    composer.render();
   })();
 })();
 
-/* ───────── reveal + contadores ───────── */
+/* ───── 4. NUCLEO GENERATIVO (torus de particulas con ruido) ───── */
+(function gen(){
+  const c = document.getElementById('genCanvas');
+  const {scene, camera, composer, st} = makeScene(c);
+  camera.position.z = 8;
+
+  const torusGeo = new THREE.TorusKnotGeometry(1.7, 0.5, 200, 26);
+  const posAttr = torusGeo.attributes.position;
+  const n = posAttr.count;
+  const base = new Float32Array(n*3);
+  for(let i=0;i<n*3;i++) base[i] = posAttr.array[i];
+  const seedA = new Float32Array(n);
+  for(let i=0;i<n;i++) seedA[i] = Math.random()*10;
+
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(base),3));
+  g.setAttribute('aSeed', new THREE.BufferAttribute(seedA,1));
+
+  const mat = new THREE.ShaderMaterial({
+    uniforms:{uTime:{value:0}, uIntensity:{value:0.0}, uColorA:{value:new THREE.Color(0xff00e5)}, uColorB:{value:new THREE.Color(0x00f0ff)}},
+    vertexShader:`
+      attribute float aSeed;
+      uniform float uTime; uniform float uIntensity;
+      varying float vMix;
+      ${NOISE}
+      void main(){
+        vec3 p = position;
+        float n = fbm(p*1.4 + vec3(0.0, uTime*0.35, aSeed));
+        p += normalize(p) * n * uIntensity;
+        vMix = smoothstep(-1.0, 1.0, p.y*0.8);
+        vec4 mv = modelViewMatrix * vec4(p,1.0);
+        gl_PointSize = (2.2 + n*3.5) * (260.0 / -mv.z);
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader:`
+      uniform vec3 uColorA; uniform vec3 uColorB;
+      varying float vMix;
+      void main(){
+        float d = length(gl_PointCoord - vec2(0.5));
+        if(d > 0.5) discard;
+        vec3 col = mix(uColorA, uColorB, vMix);
+        gl_FragColor = vec4(col, smoothstep(0.5, 0.0, d));
+      }`,
+    transparent:true, depthWrite:false, blending:THREE.AdditiveBlending
+  });
+  const points = new THREE.Points(g, mat);
+  const group = new THREE.Group();
+  group.add(points);
+  scene.add(group);
+
+  const glow = {intensity:0.0};
+  st.rot = {y:0};
+  gsap.to(st.rot, {y: Math.PI*2, ease:'none', scrollTrigger:{trigger:'#gen', start:'top bottom', end:'bottom top', scrub:1}});
+  gsap.to(glow, {intensity: 1.15, ease:'none', scrollTrigger:{trigger:'#gen', start:'top bottom', end:'bottom top', scrub:1}});
+  gsap.to(group.rotation, {x: -0.8, ease:'none', scrollTrigger:{trigger:'#gen', start:'top bottom', end:'bottom top', scrub:1}});
+
+  c._st = st; io.observe(c);
+  let t = 0;
+  (function loop(){
+    requestAnimationFrame(loop);
+    if(!st.running) return;
+    t += 0.013;
+    mat.uniforms.uTime.value = t;
+    mat.uniforms.uIntensity.value += (glow.intensity - mat.uniforms.uIntensity.value)*0.05;
+    group.rotation.y += (st.rot.y - group.rotation.y)*0.06;
+    group.rotation.z = Math.sin(t*0.4)*0.25;
+    group.scale.setScalar(1 + Math.sin(t*1.2)*0.04);
+    composer.render();
+  })();
+})();
+
+/* ───── reveal + contadores ───── */
 const revObs = new IntersectionObserver(entries=>{
   entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
 },{threshold:0.15});
@@ -466,16 +554,12 @@ document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
 const numObs = new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(!e.isIntersecting) return;
-    const el = e.target;
-    const target = +el.dataset.count;
-    const dur = 1400, t0 = performance.now();
-    function tick(now){
-      const p = Math.min((now-t0)/dur, 1);
-      el.textContent = Math.round(target * (1-Math.pow(1-p,3)));
+    const el = e.target, target = +el.dataset.count, t0 = performance.now(), dur = 1400;
+    (function tick(now){
+      const p = Math.min((now-t0)/dur,1);
+      el.textContent = Math.round(target*(1-Math.pow(1-p,3)));
       if(p<1) requestAnimationFrame(tick);
-      else el.textContent = target;
-    }
-    requestAnimationFrame(tick);
+    })(t0);
     numObs.unobserve(el);
   });
 },{threshold:0.5});
