@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEO · Kettlebell 3D — Producto Fotorrealista</title>
-<meta name="description" content="Demo de producto 3D fotorrealista: kettlebell CrossFit con PBR, entorno HDR y rotación por scroll. NEO Labs.">
+<title>NEO · Kettlebell 24KG — Turntable Fotorrealista</title>
+<meta name="description" content="Demo de producto: kettlebell fotorrealista generada con IA, turntable 360° con scroll. NEO Labs.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
@@ -16,7 +16,6 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
-canvas{display:block}
 body::after{content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0.05;
   background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,0.8) 2px 4px)}
 
@@ -25,18 +24,34 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .logo span{color:var(--red)}
 .nav-tag{font-size:0.68rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
 
-#stage{height:400vh;position:relative}
-#canvasWrap{position:sticky;top:0;height:100vh;width:100%;overflow:hidden}
-#canvasWrap canvas{position:absolute;inset:0;width:100%;height:100%}
-.overlay{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:110px 24px 60px;pointer-events:none}
+/* stage: 400vh + sticky (sin overflow:hidden para que el sticky funcione) */
+#stage{height:400vh;position:relative;overflow:visible}
+#canvasWrap{position:sticky;top:0;height:100vh;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.stage-bg{position:absolute;inset:0;background:
+  radial-gradient(ellipse 50% 45% at 50% 55%,rgba(255,0,68,0.14),transparent 70%),
+  radial-gradient(ellipse 40% 35% at 50% 30%,rgba(200,204,212,0.05),transparent 70%)}
+.ring{position:absolute;left:50%;top:62%;width:520px;height:70px;transform:translate(-50%,-50%);
+  border:1px solid rgba(255,0,68,0.35);border-radius:50%;
+  box-shadow:0 0 40px rgba(255,0,68,0.25), inset 0 0 30px rgba(255,0,68,0.15);pointer-events:none}
+.ring.r2{width:620px;height:90px;border-color:rgba(255,0,68,0.18);box-shadow:0 0 60px rgba(255,0,68,0.15)}
+.shadow{position:absolute;left:50%;top:72%;width:380px;height:56px;transform:translateX(-50%);
+  background:radial-gradient(ellipse,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.25) 55%,transparent 75%);
+  filter:blur(4px);pointer-events:none}
+.kb-stage{position:relative;z-index:2;width:560px;height:560px;display:flex;align-items:center;justify-content:center;
+  transform-style:preserve-3d;perspective:900px}
+.kb-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .18s ease;will-change:transform}
+.kb-stage img.active{opacity:1}
+.kb-stage img.rotate{transition:opacity .18s ease, transform .4s ease}
+
+.overlay{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:110px 24px 60px;pointer-events:none}
 .badge{font-size:0.68rem;letter-spacing:4px;color:var(--red);border:1px solid rgba(255,0,68,0.4);padding:8px 18px;border-radius:2px;background:rgba(255,0,68,0.05);text-shadow:0 0 12px rgba(255,0,68,0.8)}
-h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(2rem,6vw,4.6rem);color:var(--white);text-align:center;letter-spacing:3px;text-transform:uppercase;line-height:1.02}
+h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(2rem,6vw,4.6rem);color:var(--white);text-align:center;letter-spacing:3px;text-transform:uppercase;line-height:1.02;margin-top:8px}
 h1 em{font-style:normal;color:var(--red);text-shadow:0 0 30px rgba(255,0,68,0.6)}
-.sub{font-size:1.05rem;color:var(--muted);text-align:center;max-width:520px;margin:14px auto 0}
-.specs{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
-.spec{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);padding:12px 22px;text-align:center;backdrop-filter:blur(4px)}
-.spec b{display:block;font-family:'Orbitron',sans-serif;font-size:1.05rem;color:var(--white)}
-.spec span{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+.sub{font-size:1.05rem;color:var(--muted);text-align:center;max-width:520px;margin:12px auto 0}
+.specs{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.spec{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);padding:10px 18px;text-align:center;backdrop-filter:blur(4px)}
+.spec b{display:block;font-family:'Orbitron',sans-serif;font-size:0.95rem;color:var(--white)}
+.spec span{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
 .scroll-hint{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--dim);font-size:0.6rem;letter-spacing:3px;text-transform:uppercase}
 .scroll-hint .mouse{width:22px;height:36px;border:1.5px solid var(--dim);border-radius:12px;position:relative}
 .scroll-hint .mouse::after{content:'';position:absolute;top:6px;left:50%;width:3px;height:7px;margin-left:-1.5px;border-radius:3px;background:var(--red);box-shadow:0 0 8px var(--red);animation:wheel 1.5s ease-in-out infinite}
@@ -52,31 +67,45 @@ p.body strong{color:var(--white)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 footer{padding:28px 32px;border-top:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:0.72rem;color:var(--dim)}
 footer a{color:var(--red);text-decoration:none}
-@media(max-width:900px){ .wrap{grid-template-columns:1fr} }
+@media(max-width:900px){
+  .wrap{grid-template-columns:1fr}
+  .kb-stage{width:min(88vw,440px);height:min(88vw,440px)}
+  .ring{width:300px;top:64%}
+  .ring.r2{width:370px}
+  .shadow{width:240px;top:74%}
+}
 </style>
 </head>
 <body>
 
 <nav>
   <div class="logo">NEO<span>_</span></div>
-  <div class="nav-tag">// producto_3d_fotorrealista</div>
+  <div class="nav-tag">// turntable_360_fotorrealista</div>
 </nav>
 
 <section id="stage">
-  <div id="canvasWrap"><canvas id="gl"></canvas></div>
+  <div id="canvasWrap">
+    <div class="stage-bg"></div>
+    <div class="ring"></div>
+    <div class="ring r2"></div>
+    <div class="shadow"></div>
+    <div class="kb-stage" id="kbStage">
+      <!-- 12 frames inyectados por JS -->
+    </div>
+  </div>
   <div class="overlay">
-    <div class="badge">&gt; RENDER_PBR_EN_VIVO</div>
+    <div class="badge">&gt; FOTOS_REALES_GENERADAS_IA</div>
     <div>
       <h1>KETTLEBELL<br><em>24 KG</em></h1>
-      <p class="sub">Hierro fundido · asa cromada · banda roja CrossFit. Gira 360° con el scroll — renderizado en tiempo real con materiales PBR.</p>
+      <p class="sub">12 fotografías fotorrealistas generadas con IA. Gira 360° con el scroll — sin modelos 3D, sin vídeo.</p>
     </div>
     <div class="specs">
-      <div class="spec"><b>24 KG</b><span>Peso</span></div>
-      <div class="spec"><b>PBR</b><span>Metalness + Roughness</span></div>
-      <div class="spec"><b>HDR</b><span>Entorno de estudio</span></div>
-      <div class="spec"><b>360°</b><span>Scroll-driven</span></div>
+      <div class="spec"><b>24 KG</b><span>Hierro fundido</span></div>
+      <div class="spec"><b>12 FRAMES</b><span>Turntable 360°</span></div>
+      <div class="spec"><b>IA</b><span>RealVisXL</span></div>
+      <div class="spec"><b>SCROLL</b><span>Scroll-driven</span></div>
     </div>
-    <div class="scroll-hint"><div class="mouse"></div>GIRAR</div>
+    <div class="scroll-hint"><div class="mouse"></div>GIRAR 360°</div>
   </div>
 </section>
 
@@ -84,191 +113,109 @@ footer a{color:var(--red);text-decoration:none}
   <div class="wrap">
     <div class="reveal">
       <div class="sec-label">// CÓMO ESTÁ HECHO</div>
-      <h2>Fotorrealismo en el navegador</h2>
-      <p class="body">No es una foto: es <strong>geometría real con materiales PBR</strong> (metalness 0.95, roughness 0.18 en el asa cromada), <strong>entorno HDR de estudio</strong> que genera reflejos reales sobre el metal, <strong>ACES tone mapping</strong> y bloom sutil. La rotación está sincronizada con el scroll — como un vídeo de producto, pero en vivo y sin descargas.</p>
+      <h2>Fotorrealismo de verdad</h2>
+      <p class="body">12 fotografías de estudio de una kettlebell (RealVisXL, misma semilla, <strong>ángulo de 0° a 330°</strong>), recortadas de fondo verde y <strong>alineadas por bounding box</strong> para que no baile. El scroll cambia de frame: rotación 360° real con apariencia fotográfica.</p>
     </div>
     <div class="reveal">
       <div class="sec-label">// APLICACIÓN COMERCIAL</div>
-      <h2>Vende productos en 3D</h2>
-      <p class="body">Este mismo pipeline sirve para <strong>mancuernas, zapatillas, botellas, cualquier producto físico</strong> de un cliente. El modelo puede ser un GLB real (fotogrametría o AI: Meshy, Tripo) y el resultado se integra en la web con scroll, zoom y hasta AR. NEO Labs.</p>
+      <h2>Producto en cualquier web</h2>
+      <p class="body">Este pipeline vale para <strong>cualquier producto físico</strong>: mancuernas, zapatillas, gadgets. El cliente te da una foto o describimos el producto, generamos el turntable y se integra con scroll en su web. NEO Labs.</p>
     </div>
   </div>
 </section>
 
 <footer>
-  <div>© 2026 NEO LABS · DEMO_PRODUCTO_3D</div>
-  <div>THREE.JS + PBR + HDR + <a href="https://neolabs.es" target="_blank" rel="noopener">NEO</a></div>
+  <div>© 2026 NEO LABS · TURNTABLE_IA</div>
+  <div>COMFYUI + GSAP + <a href="https://neolabs.es" target="_blank" rel="noopener">NEO</a></div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script type="importmap">
-{"imports":{
-  "three":"https://unpkg.com/three@0.153.0/build/three.module.js",
-  "three/addons/":"https://unpkg.com/three@0.153.0/examples/jsm/"
-}}
-</script>
-<script type="module">
-import * as THREE from 'three';
-import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
-import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
-import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
-import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
-import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-
+<script>
 gsap.registerPlugin(ScrollTrigger);
 
-const canvas = document.getElementById('gl');
-const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-// IMPORTANTE: con EffectComposer + OutputPass NO usar ACES en el renderer
-// (doble tone mapping -> todo negro). OutputPass ya hace el tone mapping.
-renderer.toneMapping = THREE.NoToneMapping;
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0a0a0c);
-const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-camera.position.set(0, 1.6, 6.4);
-
+const FRAMES = 12;
+const stage = document.getElementById('kbStage');
 const wrap = document.getElementById('canvasWrap');
-let composer = null;
-function resize(){
-  const r = wrap.getBoundingClientRect();
-  const w = Math.max(1, r.width), h = Math.max(1, r.height);
-  renderer.setSize(w, h, false);
-  camera.aspect = w/h; camera.updateProjectionMatrix();
-  if (composer) composer.setSize(w, h);
+const imgs = [];
+
+// precarga
+for (let i = 0; i < FRAMES; i++) {
+  const img = new Image();
+  img.src = `assets/kb/kb_${String(i).padStart(2, '0')}.png`;
+  img.classList.add('rotate');
+  img.alt = `Kettlebell ángulo ${i * 30}°`;
+  stage.appendChild(img);
+  imgs.push(img);
 }
-new ResizeObserver(resize).observe(wrap);
-resize();
 
-composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(2,2), 0.45, 0.6, 0.85);
-composer.addPass(bloom);
-composer.addPass(new OutputPass());
+let current = 0;
+function show(idx) {
+  idx = ((idx % FRAMES) + FRAMES) % FRAMES;
+  if (idx === current) return;
+  imgs[current].classList.remove('active');
+  current = idx;
+  imgs[current].classList.add('active');
+}
+imgs[0].classList.add('active');
 
-/* ── entorno HDR de estudio (reflejos reales sobre el metal) ── */
-const pmrem = new THREE.PMREMGenerator(renderer);
-scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+// force frame para QA: ?f=N
+const qf = parseInt(new URLSearchParams(location.search).get('f'));
+if (!isNaN(qf)) show(qf);
 
-/* ── luz ── */
-const key = new THREE.DirectionalLight(0xffffff, 2.2);
-key.position.set(4, 6, 5);
-scene.add(key);
-const rim = new THREE.PointLight(0xff0044, 6, 20);
-rim.position.set(-4, 2.5, -3);
-scene.add(rim);
-const fill = new THREE.PointLight(0x4466ff, 2.5, 20);
-fill.position.set(3, -1, 4);
-scene.add(fill);
-
-/* ── KETTLEBELL procedimental ── */
-const group = new THREE.Group();
-scene.add(group);
-
-// bola de hierro fundido (pintada negra)
-const ball = new THREE.Mesh(
-  new THREE.SphereGeometry(1.02, 64, 48),
-  new THREE.MeshStandardMaterial({color:0x141416, metalness:0.55, roughness:0.42})
-);
-ball.scale.y = 0.96;
-ball.position.y = 1.06;
-group.add(ball);
-
-// base plana
-const base = new THREE.Mesh(
-  new THREE.CylinderGeometry(0.92, 0.98, 0.22, 48),
-  new THREE.MeshStandardMaterial({color:0x141416, metalness:0.55, roughness:0.45})
-);
-base.position.y = 0.11;
-group.add(base);
-
-// cuello
-const neck = new THREE.Mesh(
-  new THREE.CylinderGeometry(0.26, 0.5, 0.55, 32),
-  new THREE.MeshStandardMaterial({color:0x161618, metalness:0.55, roughness:0.4})
-);
-neck.position.y = 1.85;
-group.add(neck);
-
-// asa cromada
-const handle = new THREE.Mesh(
-  new THREE.TorusGeometry(0.5, 0.085, 24, 64),
-  new THREE.MeshStandardMaterial({color:0xc8ccd4, metalness:1.0, roughness:0.16, envMapIntensity:1.4})
-);
-handle.rotation.x = Math.PI/2;
-handle.position.y = 2.5;
-group.add(handle);
-
-// banda roja CrossFit
-const band = new THREE.Mesh(
-  new THREE.TorusGeometry(1.028, 0.03, 12, 64),
-  new THREE.MeshStandardMaterial({color:0xff0044, metalness:0.4, roughness:0.5, emissive:0xff0044, emissiveIntensity:0.25})
-);
-band.rotation.x = Math.PI/2;
-band.position.y = 1.06;
-group.add(band);
-
-// sombra de contacto (textura radial)
-const sh = document.createElement('canvas'); sh.width = sh.height = 256;
-const sctx = sh.getContext('2d');
-const g = sctx.createRadialGradient(128,128,10,128,128,120);
-g.addColorStop(0,'rgba(0,0,0,0.65)'); g.addColorStop(1,'rgba(0,0,0,0)');
-sctx.fillStyle = g; sctx.fillRect(0,0,256,256);
-const shadowTex = new THREE.CanvasTexture(sh);
-const ground = new THREE.Mesh(
-  new THREE.PlaneGeometry(7, 7),
-  new THREE.MeshBasicMaterial({map:shadowTex, transparent:true, depthWrite:false})
-);
-ground.rotation.x = -Math.PI/2;
-ground.position.y = 0.0;
-group.add(ground);
-
-/* ── pedestal de luz ── */
-const pedestal = new THREE.Mesh(
-  new THREE.CylinderGeometry(1.5, 1.7, 0.06, 48),
-  new THREE.MeshStandardMaterial({color:0x0d0d10, metalness:0.7, roughness:0.5})
-);
-pedestal.position.y = -0.04;
-group.add(pedestal);
-const ring = new THREE.Mesh(
-  new THREE.TorusGeometry(1.6, 0.012, 8, 80),
-  new THREE.MeshBasicMaterial({color:0xff0044, transparent:true, opacity:0.4, blending:THREE.AdditiveBlending})
-);
-ring.rotation.x = Math.PI/2;
-ring.position.y = 0.01;
-group.add(ring);
-
-/* ── scroll choreography ── */
-const state = {rotY:0, tilt:0, dolly:0, idle:0};
-gsap.to(state, {rotY: Math.PI*2.6, ease:'none', scrollTrigger:{trigger:'#stage', start:'top top', end:'bottom bottom', scrub:1}});
-gsap.to(state, {tilt: 0.5, ease:'none', scrollTrigger:{trigger:'#stage', start:'top top', end:'bottom bottom', scrub:1}});
-gsap.to(state, {dolly: 1.1, ease:'none', scrollTrigger:{trigger:'#stage', start:'top top', end:'bottom bottom', scrub:1}});
-
-const controls = new OrbitControls(camera, canvas);
-controls.enableZoom = false; controls.enablePan = false;
-controls.enableDamping = true; controls.dampingFactor = 0.08;
-controls.maxPolarAngle = Math.PI*0.55; controls.minPolarAngle = Math.PI*0.32;
-controls.autoRotate = false;
-
-let visible = true;
-new IntersectionObserver(([e])=>{ visible = e.isIntersecting; }).observe(canvas);
-
-renderer.setAnimationLoop(()=>{
-  if(!visible) return;
-  state.idle += 0.0016;
-  group.rotation.y = state.rotY + Math.sin(state.idle*4)*0.02;
-  group.rotation.x = state.tilt + Math.sin(state.idle*1.7)*0.015;
-  group.position.y = -0.3 + Math.sin(state.idle*2.2)*0.05;
-  camera.position.z = 6.4 - state.dolly*0.9;
-  controls.update();
-  composer.render();
+// scroll -> frame (turntable 360)
+const state = {progress: 0};
+gsap.to(state, {
+  progress: 1, ease: 'none',
+  scrollTrigger: {
+    trigger: '#stage', start: 'top top', end: 'bottom bottom', scrub: 1,
+    onUpdate: self => {
+      const idx = Math.round(self.progress * (FRAMES - 1));
+      show(idx);
+      state.progress = self.progress;
+      tilt(idx);
+    }
+  }
 });
+
+// idle: gira solo cuando el usuario NO está scrolleando (3s sin scroll)
+let idle = 0, lastT = performance.now(), lastScroll = 0;
+window.addEventListener('scroll', () => { lastScroll = performance.now(); }, {passive: true});
+function loop(now) {
+  const dt = (now - lastT) / 1000; lastT = now;
+  if (now - lastScroll > 3000) {
+    idle += dt * 0.9; // ~0.9 frames/seg
+    if (idle >= 1) { idle -= 1; show(current + 1); }
+  }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// parallax raton + tilt 3D suave
+let px = 0, py = 0, tx = 0, ty = 0;
+window.addEventListener('mousemove', e => {
+  px = (e.clientX / window.innerWidth - 0.5);
+  py = (e.clientY / window.innerHeight - 0.5);
+});
+function tilt(idx) {
+  const p = idx / (FRAMES - 1);
+  const baseRot = -30 + p * 60; // ligera rotacion 3D extra
+  stage.style.transform = `rotateY(${baseRot}deg)`;
+}
+(function anim() {
+  requestAnimationFrame(anim);
+  tx += (px - tx) * 0.04;
+  ty += (py - ty) * 0.04;
+  imgs.forEach(img => {
+    img.style.transform = `translate(${tx * 14}px, ${ty * 10}px)`;
+  });
+})();
+
+// reveals
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold: 0.15});
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
 </script>
 </body>
 </html>
