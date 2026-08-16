@@ -134,17 +134,18 @@ const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
 camera.position.set(0, 1.6, 6.4);
 
 const wrap = document.getElementById('canvasWrap');
+let composer = null;
 function resize(){
   const r = wrap.getBoundingClientRect();
   const w = Math.max(1, r.width), h = Math.max(1, r.height);
   renderer.setSize(w, h, false);
   camera.aspect = w/h; camera.updateProjectionMatrix();
-  composer.setSize(w, h);
+  if (composer) composer.setSize(w, h);
 }
 new ResizeObserver(resize).observe(wrap);
 resize();
 
-const composer = new EffectComposer(renderer);
+composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(2,2), 0.45, 0.6, 0.85);
 composer.addPass(bloom);
