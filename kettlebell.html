@@ -211,10 +211,14 @@ const qrot = parseFloat(new URLSearchParams(location.search).get('rot'));
 
 loader.load('assets/kb3d/kettlebell.glb', gltf => {
   model = gltf.scene;
+  // el material original es negro puro (invisible en escena oscura) -> hierro fundido PBR
+  const iron = new THREE.MeshStandardMaterial({
+    color: 0x232326, metalness: 0.68, roughness: 0.38, envMapIntensity: 1.35
+  });
+  model.traverse(o => { if (o.isMesh) o.material = iron; });
   // normalizar: escalar a altura ~3.2 y apoyar en y=0
   const box = new THREE.Box3().setFromObject(model);
   const size = new THREE.Vector3(); box.getSize(size);
-  const center = new THREE.Vector3(); box.getCenter(center);
   const scale = 3.2 / size.y;
   model.scale.setScalar(scale);
   model.position.y = -box.min.y * scale;
