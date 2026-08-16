@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEO · Kettlebell 24KG — Turntable Fotorrealista</title>
-<meta name="description" content="Demo de producto: kettlebell fotorrealista generada con IA, turntable 360° con scroll. NEO Labs.">
+<title>NEO · Kettlebell 24KG — Modelo 3D Real</title>
+<meta name="description" content="Demo de producto: kettlebell 3D con modelo GLB real, PBR, entorno HDR, rotación 360° con scroll. NEO Labs.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
@@ -16,6 +16,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
+canvas{display:block}
 body::after{content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0.05;
   background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,0.8) 2px 4px)}
 
@@ -24,30 +25,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .logo span{color:var(--red)}
 .nav-tag{font-size:0.68rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
 
-/* stage: 400vh + sticky (sin overflow:hidden para que el sticky funcione) */
 #stage{height:400vh;position:relative;overflow:visible}
-#canvasWrap{position:sticky;top:0;height:100vh;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#canvasWrap{position:sticky;top:0;height:100vh;width:100%;overflow:hidden}
+#canvasWrap canvas{position:absolute;inset:0;width:100%;height:100%}
 .stage-bg{position:absolute;inset:0;background:
-  radial-gradient(ellipse 50% 45% at 50% 55%,rgba(255,0,68,0.14),transparent 70%),
-  radial-gradient(ellipse 40% 35% at 50% 30%,rgba(200,204,212,0.05),transparent 70%)}
-.ring{position:absolute;left:50%;top:62%;width:520px;height:70px;transform:translate(-50%,-50%);
-  border:1px solid rgba(255,0,68,0.35);border-radius:50%;
-  box-shadow:0 0 40px rgba(255,0,68,0.25), inset 0 0 30px rgba(255,0,68,0.15);pointer-events:none}
-.ring.r2{width:620px;height:90px;border-color:rgba(255,0,68,0.18);box-shadow:0 0 60px rgba(255,0,68,0.15)}
-.shadow{position:absolute;left:50%;top:72%;width:380px;height:56px;transform:translateX(-50%);
-  background:radial-gradient(ellipse,rgba(0,0,0,0.75) 0%,rgba(0,0,0,0.25) 55%,transparent 75%);
-  filter:blur(4px);pointer-events:none}
-.kb-stage{position:relative;z-index:2;width:560px;height:560px;display:flex;align-items:center;justify-content:center;
-  transform-style:preserve-3d;perspective:900px}
-.kb-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .18s ease;will-change:transform}
-.kb-stage img.active{opacity:1}
-.kb-stage img.rotate{transition:opacity .18s ease, transform .4s ease}
+  radial-gradient(ellipse 50% 45% at 50% 55%,rgba(255,0,68,0.12),transparent 70%),
+  radial-gradient(ellipse 40% 35% at 50% 30%,rgba(200,204,212,0.04),transparent 70%)}
 
 .overlay{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:110px 24px 60px;pointer-events:none}
 .badge{font-size:0.68rem;letter-spacing:4px;color:var(--red);border:1px solid rgba(255,0,68,0.4);padding:8px 18px;border-radius:2px;background:rgba(255,0,68,0.05);text-shadow:0 0 12px rgba(255,0,68,0.8)}
 h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(2rem,6vw,4.6rem);color:var(--white);text-align:center;letter-spacing:3px;text-transform:uppercase;line-height:1.02;margin-top:8px}
 h1 em{font-style:normal;color:var(--red);text-shadow:0 0 30px rgba(255,0,68,0.6)}
-.sub{font-size:1.05rem;color:var(--muted);text-align:center;max-width:520px;margin:12px auto 0}
+.sub{font-size:1.05rem;color:var(--muted);text-align:center;max-width:540px;margin:12px auto 0}
 .specs{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
 .spec{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);padding:10px 18px;text-align:center;backdrop-filter:blur(4px)}
 .spec b{display:block;font-family:'Orbitron',sans-serif;font-size:0.95rem;color:var(--white)}
@@ -67,43 +56,32 @@ p.body strong{color:var(--white)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 footer{padding:28px 32px;border-top:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:0.72rem;color:var(--dim)}
 footer a{color:var(--red);text-decoration:none}
-@media(max-width:900px){
-  .wrap{grid-template-columns:1fr}
-  .kb-stage{width:min(88vw,440px);height:min(88vw,440px)}
-  .ring{width:300px;top:64%}
-  .ring.r2{width:370px}
-  .shadow{width:240px;top:74%}
-}
+@media(max-width:900px){ .wrap{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
 
 <nav>
   <div class="logo">NEO<span>_</span></div>
-  <div class="nav-tag">// turntable_360_fotorrealista</div>
+  <div class="nav-tag">// modelo_3d_real_pbr</div>
 </nav>
 
 <section id="stage">
   <div id="canvasWrap">
     <div class="stage-bg"></div>
-    <div class="ring"></div>
-    <div class="ring r2"></div>
-    <div class="shadow"></div>
-    <div class="kb-stage" id="kbStage">
-      <!-- 12 frames inyectados por JS -->
-    </div>
+    <canvas id="gl"></canvas>
   </div>
   <div class="overlay">
-    <div class="badge">&gt; FOTOS_REALES_GENERADAS_IA</div>
+    <div class="badge">&gt; MODELO_GLB_REAL + PBR + HDR</div>
     <div>
       <h1>KETTLEBELL<br><em>24 KG</em></h1>
-      <p class="sub">12 fotografías fotorrealistas generadas con IA. Gira 360° con el scroll — sin modelos 3D, sin vídeo.</p>
+      <p class="sub">Modelo 3D real (GLB) con materiales PBR y entorno HDR. Gira 360° con el scroll — apoyada en su base, sin flotar.</p>
     </div>
     <div class="specs">
-      <div class="spec"><b>24 KG</b><span>Hierro fundido</span></div>
-      <div class="spec"><b>12 FRAMES</b><span>Turntable 360°</span></div>
-      <div class="spec"><b>IA</b><span>RealVisXL</span></div>
-      <div class="spec"><b>SCROLL</b><span>Scroll-driven</span></div>
+      <div class="spec"><b>GLB</b><span>Modelo real</span></div>
+      <div class="spec"><b>PBR</b><span>Metalness + Roughness</span></div>
+      <div class="spec"><b>HDR</b><span>Reflejos reales</span></div>
+      <div class="spec"><b>360°</b><span>Scroll-driven</span></div>
     </div>
     <div class="scroll-hint"><div class="mouse"></div>GIRAR 360°</div>
   </div>
@@ -113,109 +91,163 @@ footer a{color:var(--red);text-decoration:none}
   <div class="wrap">
     <div class="reveal">
       <div class="sec-label">// CÓMO ESTÁ HECHO</div>
-      <h2>Fotorrealismo de verdad</h2>
-      <p class="body">12 fotografías de estudio de una kettlebell (RealVisXL, misma semilla, <strong>ángulo de 0° a 330°</strong>), recortadas de fondo verde y <strong>alineadas por bounding box</strong> para que no baile. El scroll cambia de frame: rotación 360° real con apariencia fotográfica.</p>
+      <h2>Fotorrealismo 3D real</h2>
+      <p class="body">Un <strong>modelo GLB profesional</strong> (escaneado/modelado, no geometría casera) renderizado con <strong>materiales PBR</strong>, <strong>entorno HDR de estudio</strong> que genera reflejos reales sobre el metal, ACES y bloom. Rotación 360° sincronizada con el scroll — como un vídeo de producto, pero en vivo.</p>
     </div>
     <div class="reveal">
       <div class="sec-label">// APLICACIÓN COMERCIAL</div>
-      <h2>Producto en cualquier web</h2>
-      <p class="body">Este pipeline vale para <strong>cualquier producto físico</strong>: mancuernas, zapatillas, gadgets. El cliente te da una foto o describimos el producto, generamos el turntable y se integra con scroll en su web. NEO Labs.</p>
+      <h2>Vende productos en 3D</h2>
+      <p class="body">Este pipeline sirve para <strong>cualquier producto físico</strong> de un cliente: el modelo puede venir de fotogrametría (Polycam/KIRI), de AI (Meshy/Tripo) o de librerías CC0. Se integra con scroll, zoom y hasta AR. NEO Labs.</p>
     </div>
   </div>
 </section>
 
 <footer>
-  <div>© 2026 NEO LABS · TURNTABLE_IA</div>
-  <div>COMFYUI + GSAP + <a href="https://neolabs.es" target="_blank" rel="noopener">NEO</a></div>
+  <div>© 2026 NEO LABS · MODELO_3D_REAL</div>
+  <div>THREE.JS + GLTF + PBR + <a href="https://neolabs.es" target="_blank" rel="noopener">NEO</a></div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script>
+<script type="importmap">
+{"imports":{
+  "three":"https://unpkg.com/three@0.153.0/build/three.module.js",
+  "three/addons/":"https://unpkg.com/three@0.153.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+
 gsap.registerPlugin(ScrollTrigger);
 
-const FRAMES = 12;
-const stage = document.getElementById('kbStage');
+const canvas = document.getElementById('gl');
 const wrap = document.getElementById('canvasWrap');
-const imgs = [];
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+// NO usar ACES con EffectComposer (doble tone mapping = negro). OutputPass gestiona el tone mapping.
+renderer.toneMapping = THREE.NoToneMapping;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-// precarga
-for (let i = 0; i < FRAMES; i++) {
-  const img = new Image();
-  img.src = `assets/kb/kb_${String(i).padStart(2, '0')}.png`;
-  img.classList.add('rotate');
-  img.alt = `Kettlebell ángulo ${i * 30}°`;
-  stage.appendChild(img);
-  imgs.push(img);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0a0c);
+const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+camera.position.set(0, 1.4, 6.0);
+
+let composer = null;
+function resize(){
+  const r = wrap.getBoundingClientRect();
+  const w = Math.max(1, r.width), h = Math.max(1, r.height);
+  renderer.setSize(w, h, false);
+  camera.aspect = w/h; camera.updateProjectionMatrix();
+  if (composer) composer.setSize(w, h);
 }
+new ResizeObserver(resize).observe(wrap);
+resize();
 
-let current = 0;
-function show(idx) {
-  idx = ((idx % FRAMES) + FRAMES) % FRAMES;
-  if (idx === current) return;
-  imgs[current].classList.remove('active');
-  current = idx;
-  imgs[current].classList.add('active');
-}
-imgs[0].classList.add('active');
+composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(2,2), 0.35, 0.6, 0.9));
+composer.addPass(new OutputPass());
 
-// force frame para QA: ?f=N
-const qf = parseInt(new URLSearchParams(location.search).get('f'));
-if (!isNaN(qf)) show(qf);
+// entorno HDR de estudio
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
 
-// scroll -> frame (turntable 360)
-const state = {progress: 0};
-gsap.to(state, {
-  progress: 1, ease: 'none',
-  scrollTrigger: {
-    trigger: '#stage', start: 'top top', end: 'bottom bottom', scrub: 1,
-    onUpdate: self => {
-      const idx = Math.round(self.progress * (FRAMES - 1));
-      show(idx);
-      state.progress = self.progress;
-      tilt(idx);
-    }
+// luces
+const key = new THREE.DirectionalLight(0xffffff, 2.0);
+key.position.set(4, 6, 5);
+scene.add(key);
+const rim = new THREE.PointLight(0xff0044, 5, 20);
+rim.position.set(-4, 2.5, -3);
+scene.add(rim);
+
+// grupo del modelo
+const group = new THREE.Group();
+scene.add(group);
+
+// sombra de contacto (radial)
+const sh = document.createElement('canvas'); sh.width = sh.height = 256;
+const sctx = sh.getContext('2d');
+const g = sctx.createRadialGradient(128,128,10,128,128,120);
+g.addColorStop(0,'rgba(0,0,0,0.7)'); g.addColorStop(1,'rgba(0,0,0,0)');
+sctx.fillStyle = g; sctx.fillRect(0,0,256,256);
+const shadowTex = new THREE.CanvasTexture(sh);
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(6, 6),
+  new THREE.MeshBasicMaterial({map:shadowTex, transparent:true, depthWrite:false})
+);
+ground.rotation.x = -Math.PI/2;
+ground.position.y = 0.01;
+group.add(ground);
+
+// pedestal
+const pedestal = new THREE.Mesh(
+  new THREE.CylinderGeometry(1.35, 1.5, 0.05, 48),
+  new THREE.MeshStandardMaterial({color:0x0d0d10, metalness:0.7, roughness:0.5})
+);
+pedestal.position.y = 0.0;
+group.add(pedestal);
+const ring = new THREE.Mesh(
+  new THREE.TorusGeometry(1.42, 0.012, 8, 80),
+  new THREE.MeshBasicMaterial({color:0xff0044, transparent:true, opacity:0.45, blending:THREE.AdditiveBlending})
+);
+ring.rotation.x = Math.PI/2;
+ring.position.y = 0.03;
+group.add(ring);
+
+// cargar modelo GLB
+const loader = new GLTFLoader();
+let model = null;
+const state = {rotY: 0, tilt: 0};
+
+// parametro de QA: ?rot=180 fuerza angulo inicial
+const qrot = parseFloat(new URLSearchParams(location.search).get('rot'));
+
+loader.load('assets/kb3d/kettlebell.glb', gltf => {
+  model = gltf.scene;
+  // normalizar: escalar a altura ~3.2 y apoyar en y=0
+  const box = new THREE.Box3().setFromObject(model);
+  const size = new THREE.Vector3(); box.getSize(size);
+  const center = new THREE.Vector3(); box.getCenter(center);
+  const scale = 3.2 / size.y;
+  model.scale.setScalar(scale);
+  model.position.y = -box.min.y * scale;
+  group.add(model);
+
+  if (!isNaN(qrot)) {
+    state.rotY = qrot * Math.PI / 180;
+    state.tilt = 0.35;
   }
+}, undefined, err => {
+  console.error('GLB load error:', err);
+  document.querySelector('.badge').textContent = '&gt; ERROR_CARGANDO_MODELO';
 });
 
-// idle: gira solo cuando el usuario NO está scrolleando (3s sin scroll)
-let idle = 0, lastT = performance.now(), lastScroll = 0;
-window.addEventListener('scroll', () => { lastScroll = performance.now(); }, {passive: true});
-function loop(now) {
-  const dt = (now - lastT) / 1000; lastT = now;
-  if (now - lastScroll > 3000) {
-    idle += dt * 0.9; // ~0.9 frames/seg
-    if (idle >= 1) { idle -= 1; show(current + 1); }
-  }
-  requestAnimationFrame(loop);
+// scroll choreography
+if (isNaN(qrot)) {
+  gsap.to(state, {rotY: Math.PI*2.5, ease:'none', scrollTrigger:{trigger:'#stage', start:'top top', end:'bottom bottom', scrub:1}});
+  gsap.to(state, {tilt: 0.45, ease:'none', scrollTrigger:{trigger:'#stage', start:'top top', end:'bottom bottom', scrub:1}});
 }
-requestAnimationFrame(loop);
 
-// parallax raton + tilt 3D suave
-let px = 0, py = 0, tx = 0, ty = 0;
-window.addEventListener('mousemove', e => {
-  px = (e.clientX / window.innerWidth - 0.5);
-  py = (e.clientY / window.innerHeight - 0.5);
+let idle = 0, idleRot = 0, lastT = performance.now(), lastScroll = 0;
+window.addEventListener('scroll', () => { lastScroll = performance.now(); }, {passive:true});
+
+renderer.setAnimationLoop(() => {
+  const now = performance.now();
+  const dt = (now - lastT)/1000; lastT = now;
+  if (!model) return;
+  idle += dt;
+  if (now - lastScroll > 2500) idleRot += dt * 0.12; // giro suave en reposo
+  group.rotation.y = state.rotY + idleRot + Math.sin(idle*2)*0.03;
+  group.rotation.x = state.tilt + Math.sin(idle*1.3)*0.02;
+  composer.render();
 });
-function tilt(idx) {
-  const p = idx / (FRAMES - 1);
-  const baseRot = -30 + p * 60; // ligera rotacion 3D extra
-  stage.style.transform = `rotateY(${baseRot}deg)`;
-}
-(function anim() {
-  requestAnimationFrame(anim);
-  tx += (px - tx) * 0.04;
-  ty += (py - ty) * 0.04;
-  imgs.forEach(img => {
-    img.style.transform = `translate(${tx * 14}px, ${ty * 10}px)`;
-  });
-})();
-
-// reveals
-const revObs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, {threshold: 0.15});
-document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
 </script>
 </body>
 </html>
