@@ -156,14 +156,9 @@ composer.addPass(new RenderPass(scene, camera));
 composer.addPass(new UnrealBloomPass(new THREE.Vector2(2,2), 0.35, 0.6, 0.9));
 composer.addPass(new OutputPass());
 
-// entorno HDR real de estudio (reflejos metalicos autenticos)
+// entorno HDR de estudio (RoomEnvironment = brillante, reflejos buenos para metal oscuro)
 const pmrem = new THREE.PMREMGenerator(renderer);
-new RGBELoader().load('assets/kb3d/studio.hdr', hdr => {
-  scene.environment = pmrem.fromEquirectangular(hdr).texture;
-  pmrem.dispose();
-}, undefined, () => {
-  scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
-});
+scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
 
 // luces
 const key = new THREE.DirectionalLight(0xffffff, 2.6);
@@ -222,7 +217,7 @@ loader.load('assets/kb3d/kettlebell.glb', gltf => {
   model = gltf.scene;
   // el material original es negro puro (invisible en escena oscura) -> hierro fundido PBR
   const iron = new THREE.MeshStandardMaterial({
-    color: 0x232326, metalness: 0.68, roughness: 0.38, envMapIntensity: 1.35
+    color: 0x2e2e32, metalness: 0.6, roughness: 0.42, envMapIntensity: 1.6
   });
   model.traverse(o => { if (o.isMesh) o.material = iron; });
   // normalizar: escalar a altura ~3.2 y apoyar en y=0
