@@ -122,8 +122,9 @@ gsap.registerPlugin(ScrollTrigger);
 const canvas = document.getElementById('gl');
 const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
+// IMPORTANTE: con EffectComposer + OutputPass NO usar ACES en el renderer
+// (doble tone mapping -> todo negro). OutputPass ya hace el tone mapping.
+renderer.toneMapping = THREE.NoToneMapping;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
